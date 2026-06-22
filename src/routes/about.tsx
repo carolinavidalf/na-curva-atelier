@@ -25,15 +25,16 @@ export const Route = createFileRoute("/about")({
 function AboutPage() {
   return (
     <SiteLayout>
-      <section className="px-5 pb-16 pt-16 md:px-10 md:pb-24 md:pt-24">
+      <section className="bg-lavender px-5 pb-20 pt-16 md:px-10 md:pb-28 md:pt-24">
         <div className="mx-auto max-w-5xl">
-          <p className="eyebrow mb-6">Our story</p>
-          <h1 className="font-serif text-5xl leading-[1.02] tracking-tight md:text-8xl">
-            A wardrobe of
-            <span className="block italic text-muted-foreground">borrowed beauty.</span>
+          <p className="eyebrow mb-6 text-coral">Our story ✸</p>
+          <h1 className="font-display text-6xl leading-[0.9] tracking-[-0.045em] md:text-[7rem]">
+            a wardrobe of
+            <span className="block text-coral">borrowed beauty.</span>
           </h1>
         </div>
       </section>
+
 
       <section className="grid grid-cols-1 md:grid-cols-12">
         <div className="md:col-span-7">
@@ -46,7 +47,7 @@ function AboutPage() {
           />
         </div>
         <div className="flex flex-col justify-center gap-8 px-5 py-16 md:col-span-5 md:px-12 md:py-24">
-          <p className="font-serif text-2xl leading-snug md:text-3xl">
+          <p className="font-display text-2xl leading-snug md:text-3xl">
             Na Curva began with a closet full of dresses worn once, and the
             quiet realisation that beauty is meant to be lived in.
           </p>
@@ -81,36 +82,41 @@ function AboutPage() {
                 d: "A more thoughtful way to dress — one dress, many women, many stories.",
               },
             ].map((v) => (
-              <div key={v.t} className="border-t border-foreground/20 pt-6">
-                <h3 className="font-serif text-2xl md:text-3xl">{v.t}</h3>
+              <div key={v.t} className="border-t-2 border-coral pt-6">
+                <h3 className="font-display text-3xl md:text-4xl">{v.t}</h3>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
                   {v.d}
                 </p>
+
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-border bg-bone px-5 py-24 text-center md:py-32">
-        <p className="eyebrow mb-6">Begin</p>
-        <h2 className="mx-auto max-w-3xl font-serif text-4xl leading-tight md:text-6xl">
-          Tell us about the occasion.
+      <section className="border-t border-border bg-coral px-5 py-24 text-center text-background md:py-32">
+        <p className="eyebrow mb-6 text-peach">Begin ✸</p>
+        <h2 className="mx-auto max-w-3xl font-display text-5xl leading-[0.92] md:text-7xl">
+          tell us about <span className="block text-peach">the occasion.</span>
         </h2>
-        <div className="mt-10 flex flex-col items-center justify-center gap-6 md:flex-row md:gap-10">
-          <Link to="/collection" className="border-b border-foreground pb-1 text-sm">
+        <div className="mt-12 flex flex-col items-center justify-center gap-5 md:flex-row md:gap-6">
+          <Link
+            to="/collection"
+            className="inline-flex items-center gap-3 bg-background px-7 py-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-coral transition-colors hover:bg-lavender hover:text-foreground"
+          >
             Browse the collection →
           </Link>
           <a
             href={WHATSAPP_GENERAL}
             target="_blank"
             rel="noreferrer"
-            className="eyebrow link-underline"
+            className="inline-flex items-center gap-3 border border-background/80 px-7 py-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-background transition-colors hover:bg-background hover:text-coral"
           >
             Reserve via WhatsApp
           </a>
         </div>
       </section>
+
     </SiteLayout>
   );
 }

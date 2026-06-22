@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site-layout";
+import { Wordmark } from "@/components/wordmark";
 import { DRESSES } from "@/lib/dresses";
 import { WHATSAPP_GENERAL } from "@/lib/whatsapp";
 import heroImg from "@/assets/hero.jpg";
@@ -9,147 +10,189 @@ import editorial2 from "@/assets/editorial-2.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Na Curva — Curated Dress Rental in Portugal" },
+      { title: "Na Curva — Designer Dress Rental for Every Celebration" },
       {
         name: "description",
         content:
-          "Wear the dress, own the moment. A curated rental wardrobe of designer dresses for weddings, celebrations and evenings out.",
+          "Designer dresses rented by the night. For summer weddings, birthday dinners, fashion events and the moments you want to remember.",
       },
-      { property: "og:title", content: "Na Curva — Curated Dress Rental" },
+      { property: "og:title", content: "Na Curva — Designer Dress Rental" },
       {
         property: "og:description",
         content:
-          "A curated rental wardrobe of designer dresses for weddings, celebrations and evenings out.",
+          "Designer dresses rented by the night — for weddings, birthdays, dinners and the moments that matter.",
       },
     ],
   }),
   component: HomePage,
 });
 
+const OCCASIONS_STRIP = [
+  "Summer weddings",
+  "Birthday dinners",
+  "Fashion events",
+  "Weekends away",
+  "Saturday nights",
+  "Garden parties",
+];
+
 function HomePage() {
   const featured = DRESSES.slice(0, 4);
   return (
     <SiteLayout>
       {/* HERO */}
-      <section className="relative">
+      <section className="relative bg-lavender">
         <div className="grid grid-cols-1 md:grid-cols-12">
-          <div className="order-2 flex flex-col justify-between px-5 py-12 md:order-1 md:col-span-5 md:px-10 md:py-20 lg:px-16 lg:py-28">
-            <p className="eyebrow">Na Curva — Edição 01</p>
+          <div className="order-2 flex flex-col justify-between gap-12 px-5 py-14 md:order-1 md:col-span-5 md:px-10 md:py-16 lg:px-14 lg:py-20">
+            <div className="flex items-center justify-between">
+              <p className="eyebrow text-foreground/70">Edição 01 — Verão 26</p>
+              <span className="asterisk text-2xl">✸</span>
+            </div>
 
-            <div className="mt-12 md:mt-0">
-              <h1 className="font-serif text-[2.6rem] leading-[1] tracking-tight md:text-[4.5rem] lg:text-[5.5rem]">
-                Wear the dress.
-                <span className="block italic text-muted-foreground">
-                  Own the moment.
-                </span>
+            <div>
+              <h1 className="font-display text-[3.4rem] leading-[0.88] tracking-[-0.045em] text-foreground md:text-[5.2rem] lg:text-[6.4rem]">
+                wear the<br />
+                dress.<br />
+                <span className="text-coral">own the</span><br />
+                <span className="text-coral">moment.</span>
               </h1>
-              <p className="mt-8 max-w-md text-base leading-relaxed text-muted-foreground md:text-[15px]">
-                A small, considered wardrobe of exceptional dresses — rented
-                by the night for the celebrations that ask for something
-                beautiful.
+              <p className="mt-10 max-w-md text-base leading-relaxed text-foreground/75">
+                Designer dresses, rented by the night. For the weddings,
+                birthdays, dinners and weekends away that ask for something
+                a little louder than your wardrobe.
               </p>
 
-              <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
+              <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-5">
                 <Link
                   to="/collection"
-                  className="group inline-flex items-center gap-3 border-b border-foreground pb-2 text-sm tracking-wide"
+                  className="inline-flex items-center gap-3 bg-foreground px-7 py-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-background transition-colors hover:bg-coral"
                 >
-                  Browse the Collection
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
+                  Browse the collection <span>→</span>
                 </Link>
                 <a
                   href={WHATSAPP_GENERAL}
                   target="_blank"
                   rel="noreferrer"
-                  className="eyebrow link-underline"
+                  className="inline-flex items-center gap-3 border border-foreground/80 px-7 py-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-foreground transition-colors hover:bg-foreground hover:text-background"
                 >
-                  Reserve via WhatsApp
+                  Reserve on WhatsApp
                 </a>
               </div>
+            </div>
+
+            <div className="flex items-end justify-between text-[0.7rem] uppercase tracking-[0.22em] text-foreground/60">
+              <span>Lisbon — PT</span>
+              <span>For her, for the night ✸</span>
             </div>
           </div>
 
           <div className="order-1 md:order-2 md:col-span-7">
             <img
               src={heroImg}
-              alt="Woman in flowing ivory dress in a sunlit Portuguese villa"
+              alt="Woman in a flowing dress in a sunlit Portuguese villa"
               width={1280}
               height={1600}
-              className="h-[70vh] w-full object-cover md:h-[88vh] lg:h-[92vh]"
+              className="h-[68vh] w-full object-cover md:h-[88vh] lg:h-[92vh]"
             />
           </div>
         </div>
       </section>
 
+      {/* OCCASIONS MARQUEE */}
+      <section className="overflow-hidden border-y border-foreground bg-coral text-background">
+        <div className="marquee-track py-5 font-display text-4xl uppercase tracking-[-0.03em] md:text-6xl">
+          {Array.from({ length: 2 }).map((_, group) => (
+            <span key={group} className="flex shrink-0 items-center gap-10">
+              {OCCASIONS_STRIP.map((label) => (
+                <span key={`${group}-${label}`} className="flex shrink-0 items-center gap-10">
+                  <span>{label}</span>
+                  <span className="text-peach">✸</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </section>
+
       {/* FEATURED COLLECTION */}
-      <section className="border-t border-border px-5 py-20 md:px-10 md:py-28">
+      <section className="px-5 py-20 md:px-10 md:py-28">
         <div className="mb-12 flex items-end justify-between md:mb-16">
           <div>
-            <p className="eyebrow mb-4">The Edit</p>
-            <h2 className="font-serif text-4xl md:text-6xl">Selected pieces</h2>
+            <p className="eyebrow mb-4 text-coral">The Edit ✸</p>
+            <h2 className="font-display text-5xl md:text-7xl">Selected pieces.</h2>
           </div>
           <Link to="/collection" className="eyebrow link-underline hidden md:block">
-            View all
+            View all →
           </Link>
         </div>
 
         <div className="grid grid-cols-2 gap-x-3 gap-y-12 md:grid-cols-4 md:gap-x-6 md:gap-y-16">
-          {featured.map((dress) => (
+          {featured.map((dress, i) => (
             <Link
               key={dress.slug}
               to="/dress/$slug"
               params={{ slug: dress.slug }}
               className="group block"
             >
-              <div className="overflow-hidden bg-bone">
+              <div
+                className={`overflow-hidden ${i % 2 === 0 ? "bg-lavender" : "bg-bone"}`}
+              >
                 <img
                   src={dress.image}
                   alt={dress.name}
                   width={1024}
                   height={1280}
                   loading="lazy"
-                  className="aspect-[4/5] w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]"
+                  className="aspect-[4/5] w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
                 />
               </div>
               <div className="mt-4 flex items-baseline justify-between gap-2">
                 <div>
-                  <p className="font-serif text-base md:text-lg">{dress.name}</p>
+                  <p className="font-display text-base tracking-tight md:text-lg">
+                    {dress.name}
+                  </p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {dress.designer}
                   </p>
                 </div>
-                <p className="text-xs text-muted-foreground">€{dress.price}</p>
+                <p className="text-xs font-medium text-coral">€{dress.price}</p>
               </div>
             </Link>
           ))}
         </div>
 
         <div className="mt-12 text-center md:hidden">
-          <Link to="/collection" className="eyebrow link-underline">
-            View the full collection
+          <Link to="/collection" className="eyebrow link-underline text-coral">
+            View the full collection →
           </Link>
         </div>
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="border-t border-border bg-bone px-5 py-20 md:px-10 md:py-28">
+      <section className="border-t border-border bg-lavender px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-6xl">
-          <p className="eyebrow mb-4">How it works</p>
-          <h2 className="mb-16 max-w-3xl font-serif text-4xl leading-tight md:text-6xl">
-            Four steps, no friction.
-          </h2>
+          <div className="flex items-end justify-between">
+            <div>
+              <p className="eyebrow mb-4 text-foreground/60">How it works</p>
+              <h2 className="max-w-3xl font-display text-5xl leading-[0.92] md:text-7xl">
+                Four steps,<br />
+                <span className="text-coral">zero friction.</span>
+              </h2>
+            </div>
+            <span className="hidden text-5xl text-coral md:block">✸</span>
+          </div>
 
-          <ol className="grid grid-cols-1 gap-12 md:grid-cols-4 md:gap-8">
+          <ol className="mt-16 grid grid-cols-1 gap-12 md:grid-cols-4 md:gap-8">
             {[
               { n: "01", t: "Choose", d: "Browse the edit. Save what speaks to you." },
-              { n: "02", t: "Reserve", d: "Send us a message. We confirm in minutes." },
-              { n: "03", t: "Wear", d: "Your dress arrives ready. Yours for four days." },
-              { n: "04", t: "Return", d: "Slip it back in the bag. We take care of the rest." },
+              { n: "02", t: "Reserve", d: "Message us. We confirm in minutes." },
+              { n: "03", t: "Wear", d: "It arrives pressed and ready. Yours for four nights." },
+              { n: "04", t: "Return", d: "Slip it back in the bag. We do the rest." },
             ].map((s) => (
-              <li key={s.n} className="border-t border-foreground/20 pt-5">
-                <p className="font-serif text-3xl">{s.n}</p>
-                <p className="mt-6 font-serif text-xl">{s.t}</p>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              <li key={s.n} className="border-t-2 border-foreground pt-5">
+                <p className="font-display text-4xl text-coral">{s.n}</p>
+                <p className="mt-6 font-display text-2xl">{s.t}</p>
+                <p className="mt-3 text-sm leading-relaxed text-foreground/70">
                   {s.d}
                 </p>
               </li>
@@ -163,7 +206,7 @@ function HomePage() {
         <div className="md:col-span-7">
           <img
             src={editorial1}
-            alt="Woman in flowing dress walking along whitewashed Portuguese coastal path at golden hour"
+            alt="Woman in flowing dress on a sunlit Portuguese coastal path"
             width={1600}
             height={1024}
             loading="lazy"
@@ -171,42 +214,42 @@ function HomePage() {
           />
         </div>
         <div className="flex flex-col justify-center bg-bone px-5 py-16 md:col-span-5 md:px-12 md:py-20">
-          <p className="eyebrow mb-5">Why Rent</p>
-          <h2 className="font-serif text-3xl leading-tight md:text-5xl">
+          <p className="eyebrow mb-5 text-coral">Why Rent ✸</p>
+          <h2 className="font-display text-4xl leading-[0.95] md:text-6xl">
             A wardrobe that lives with more than one woman.
           </h2>
           <ul className="mt-10 space-y-5 text-[15px] leading-relaxed text-foreground">
-            <li className="flex gap-4 border-t border-border pt-5">
-              <span className="eyebrow shrink-0">01</span>
-              <p>Access pieces that would otherwise hang unworn.</p>
+            <li className="flex gap-4 border-t border-foreground/30 pt-5">
+              <span className="font-display text-coral">01</span>
+              <p>Wear pieces that would otherwise hang unworn in someone's wardrobe.</p>
             </li>
-            <li className="flex gap-4 border-t border-border pt-5">
-              <span className="eyebrow shrink-0">02</span>
-              <p>A small, intentionally curated edit — never a marketplace.</p>
+            <li className="flex gap-4 border-t border-foreground/30 pt-5">
+              <span className="font-display text-coral">02</span>
+              <p>A small, hand-picked edit — never a marketplace, never a sea.</p>
             </li>
-            <li className="flex gap-4 border-t border-border pt-5">
-              <span className="eyebrow shrink-0">03</span>
-              <p>A more conscious way of dressing for the moments that count.</p>
+            <li className="flex gap-4 border-t border-foreground/30 pt-5">
+              <span className="font-display text-coral">03</span>
+              <p>A more conscious — and a lot more fun — way to dress for the moments that count.</p>
             </li>
           </ul>
         </div>
       </section>
 
       {/* ABOUT TEASER */}
-      <section className="grid grid-cols-1 border-t border-border md:grid-cols-12">
+      <section className="grid grid-cols-1 bg-lavender md:grid-cols-12">
         <div className="flex flex-col justify-center px-5 py-16 md:col-span-5 md:px-12 md:py-24">
-          <p className="eyebrow mb-5">About Na Curva</p>
-          <h2 className="font-serif text-3xl leading-tight md:text-5xl">
-            Curated in Lisbon, worn everywhere.
+          <p className="eyebrow mb-5 text-foreground/60">About Na Curva</p>
+          <h2 className="font-display text-4xl leading-[0.95] md:text-6xl">
+            Curated in Lisbon. <span className="text-coral">Worn everywhere.</span>
           </h2>
-          <p className="mt-8 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-            Na Curva was born from the idea that exceptional clothes should be
-            lived in — not stored. We select each dress for its silhouette, its
-            craft, and the kind of evening it deserves.
+          <p className="mt-8 max-w-md text-[15px] leading-relaxed text-foreground/75">
+            Na Curva was born from one idea: exceptional clothes should be
+            lived in, not stored. We pick each dress for its silhouette, its
+            craft and the kind of night it deserves.
           </p>
           <Link
             to="/about"
-            className="mt-10 self-start border-b border-foreground pb-1 text-sm"
+            className="mt-10 inline-flex w-fit items-center gap-3 bg-foreground px-6 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-background transition-colors hover:bg-coral"
           >
             Read our story →
           </Link>
@@ -224,55 +267,60 @@ function HomePage() {
       </section>
 
       {/* FAQ PREVIEW */}
-      <section className="border-t border-border px-5 py-20 md:px-10 md:py-28">
+      <section className="px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12 flex items-end justify-between">
             <div>
-              <p className="eyebrow mb-4">Questions</p>
-              <h2 className="font-serif text-4xl md:text-6xl">Good to know</h2>
+              <p className="eyebrow mb-4 text-coral">Questions ✸</p>
+              <h2 className="font-display text-5xl md:text-7xl">Good to know.</h2>
             </div>
             <Link to="/faq" className="eyebrow link-underline hidden md:block">
-              All answers
+              All answers →
             </Link>
           </div>
 
-          <dl className="divide-y divide-border border-y border-border">
+          <dl className="divide-y divide-foreground/20 border-y border-foreground/20">
             {[
-              { q: "How long is the rental?", a: "Four days, door to door. Longer rentals available on request." },
-              { q: "What if the dress is damaged?", a: "Minor wear is expected and included. We'll discuss anything beyond that case by case." },
-              { q: "How do reservations work?", a: "Reservations are made via WhatsApp. We respond personally — usually within the hour." },
+              { q: "How long is the rental?", a: "Four days, door to door. Longer stays available on request." },
+              { q: "What if the dress is damaged?", a: "Minor wear is on us. Anything beyond that we discuss case by case — no panic." },
+              { q: "How do reservations work?", a: "All via WhatsApp. We reply personally — usually within the hour." },
             ].map((item) => (
               <div key={item.q} className="grid grid-cols-1 gap-4 py-8 md:grid-cols-12">
-                <dt className="font-serif text-xl md:col-span-5 md:text-2xl">{item.q}</dt>
-                <dd className="text-[15px] leading-relaxed text-muted-foreground md:col-span-7">{item.a}</dd>
+                <dt className="font-display text-2xl tracking-tight md:col-span-5 md:text-3xl">
+                  {item.q}
+                </dt>
+                <dd className="text-[15px] leading-relaxed text-muted-foreground md:col-span-7">
+                  {item.a}
+                </dd>
               </div>
             ))}
           </dl>
 
           <div className="mt-10 md:hidden">
-            <Link to="/faq" className="eyebrow link-underline">
-              See all questions
+            <Link to="/faq" className="eyebrow link-underline text-coral">
+              See all questions →
             </Link>
           </div>
         </div>
       </section>
 
       {/* FINAL CTA */}
-      <section className="border-t border-border bg-foreground px-5 py-24 text-background md:px-10 md:py-36">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="eyebrow mb-6 text-background/60">Reserve a dress</p>
-          <h2 className="font-serif text-4xl leading-[1.05] md:text-7xl">
-            The dress is ready
-            <span className="block italic">when you are.</span>
+      <section className="bg-coral px-5 py-24 text-background md:px-10 md:py-36">
+        <div className="mx-auto max-w-5xl text-center">
+          <Wordmark className="text-peach text-[clamp(2.5rem,7vw,5rem)]" />
+          <h2 className="mt-10 font-display text-5xl leading-[0.9] md:text-8xl">
+            the dress is ready
+            <span className="block text-peach">when you are.</span>
           </h2>
-          <p className="mx-auto mt-8 max-w-lg text-[15px] leading-relaxed text-background/70">
-            Tell us the occasion. We'll help you find the dress.
+          <p className="mx-auto mt-10 max-w-lg text-[15px] leading-relaxed text-background/85">
+            Tell us the occasion — wedding, birthday, gallery opening, weekend
+            in Comporta. We'll help you find the dress.
           </p>
           <a
             href={WHATSAPP_GENERAL}
             target="_blank"
             rel="noreferrer"
-            className="mt-12 inline-block border-b border-background pb-2 text-sm tracking-wide"
+            className="mt-12 inline-block bg-background px-8 py-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-coral transition-colors hover:bg-lavender hover:text-foreground"
           >
             Reserve via WhatsApp →
           </a>
