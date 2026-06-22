@@ -5,7 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-serif: "Cormorant Garamond", "Times New Roman", serif;
+  --font-display: "Hanken Grotesk", "Inter", system-ui, sans-serif;
+  --font-serif: "Hanken Grotesk", "Inter", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
 
   --radius-sm: 0px;
@@ -31,10 +32,17 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
   --color-bone: var(--bone);
   --color-stone-warm: var(--stone-warm);
   --color-ink: var(--ink);
-  --color-clay: var(--clay);
+
+  /* Brand */
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
+  --color-lavender: var(--lavender);
+  --color-lavender-deep: var(--lavender-deep);
+  --color-peach: var(--peach);
 }
 
 :root {
@@ -49,32 +57,36 @@
   --foreground: oklch(0.22 0.012 60);
   --ink: oklch(0.18 0.01 60);
 
-  /* Subtle warm accent (terracotta whisper) */
-  --clay: oklch(0.55 0.08 40);
+  /* Na Curva brand */
+  --coral: oklch(0.66 0.21 33);            /* #F04E2C-ish */
+  --coral-soft: oklch(0.74 0.16 35);
+  --peach: oklch(0.88 0.07 40);             /* logo text-on-coral */
+  --lavender: oklch(0.88 0.045 295);        /* #D9CFEA-ish */
+  --lavender-deep: oklch(0.78 0.07 295);
 
   --card: oklch(0.98 0.006 80);
   --card-foreground: var(--foreground);
   --popover: oklch(0.98 0.006 80);
   --popover-foreground: var(--foreground);
 
-  --primary: oklch(0.22 0.012 60);
-  --primary-foreground: oklch(0.975 0.008 80);
+  --primary: var(--coral);
+  --primary-foreground: oklch(0.98 0.01 80);
 
-  --secondary: oklch(0.93 0.012 75);
+  --secondary: var(--lavender);
   --secondary-foreground: var(--foreground);
 
   --muted: oklch(0.94 0.01 75);
-  --muted-foreground: oklch(0.48 0.012 60);
+  --muted-foreground: oklch(0.45 0.012 60);
 
-  --accent: oklch(0.92 0.015 70);
+  --accent: var(--lavender);
   --accent-foreground: var(--foreground);
 
   --destructive: oklch(0.5 0.18 28);
   --destructive-foreground: oklch(0.98 0 0);
 
-  --border: oklch(0.88 0.012 70);
-  --input: oklch(0.88 0.012 70);
-  --ring: oklch(0.5 0.012 60);
+  --border: oklch(0.86 0.012 70);
+  --input: oklch(0.86 0.012 70);
+  --ring: var(--coral);
 }
 
 .dark {
@@ -97,18 +109,21 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 0.005em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    letter-spacing: -0.01em;
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
   }
 
-  .font-serif {
-    font-family: var(--font-serif);
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.035em;
   }
 
   .font-sans {
@@ -119,7 +134,7 @@
   .eyebrow {
     font-family: var(--font-sans);
     font-size: 0.6875rem;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--color-muted-foreground);
@@ -127,6 +142,33 @@
 
   .rule {
     border-top: 1px solid var(--color-border);
+  }
+
+  /* Na Curva wordmark — lowercase heavy sans with underscore bar */
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    text-transform: lowercase;
+    line-height: 0.9;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.18em;
+  }
+  .wordmark__bar {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.12em;
+    background-color: currentColor;
+    margin: 0 0.05em;
+    transform: translateY(0.04em);
+  }
+
+  /* Asterisk flourish from brand world */
+  .asterisk {
+    display: inline-block;
+    color: var(--color-coral);
+    transform: translateY(-0.1em);
   }
 
   /* Underline link */
@@ -150,7 +192,19 @@
   }
 
   ::selection {
-    background-color: var(--color-ink);
+    background-color: var(--color-coral);
     color: var(--color-background);
+  }
+
+  /* Marquee */
+  @keyframes nc-marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .marquee-track {
+    display: inline-flex;
+    gap: 2.5rem;
+    white-space: nowrap;
+    animation: nc-marquee 40s linear infinite;
   }
 }
