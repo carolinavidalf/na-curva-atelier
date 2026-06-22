@@ -28,9 +28,9 @@ function AboutPage() {
       <section className="px-5 pb-16 pt-16 md:px-10 md:pb-24 md:pt-24">
         <div className="mx-auto max-w-5xl">
           <p className="eyebrow mb-6">Our story</p>
-          <h1 className="font-serif text-5xl leading-[1.02] tracking-tight md:text-8xl">
+          <h1 className="font-display text-5xl leading-[1.02] tracking-tight md:text-8xl">
             A wardrobe of
-            <span className="block italic text-muted-foreground">borrowed beauty.</span>
+            <span className="block text-coral">borrowed beauty.</span>
           </h1>
         </div>
       </section>
@@ -46,7 +46,7 @@ function AboutPage() {
           />
         </div>
         <div className="flex flex-col justify-center gap-8 px-5 py-16 md:col-span-5 md:px-12 md:py-24">
-          <p className="font-serif text-2xl leading-snug md:text-3xl">
+          <p className="font-display text-2xl leading-snug md:text-3xl">
             Na Curva began with a closet full of dresses worn once, and the
             quiet realisation that beauty is meant to be lived in.
           </p>
@@ -82,7 +82,7 @@ function AboutPage() {
               },
             ].map((v) => (
               <div key={v.t} className="border-t border-foreground/20 pt-6">
-                <h3 className="font-serif text-2xl md:text-3xl">{v.t}</h3>
+                <h3 className="font-display text-2xl md:text-3xl">{v.t}</h3>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
                   {v.d}
                 </p>
@@ -94,7 +94,7 @@ function AboutPage() {
 
       <section className="border-t border-border bg-bone px-5 py-24 text-center md:py-32">
         <p className="eyebrow mb-6">Begin</p>
-        <h2 className="mx-auto max-w-3xl font-serif text-4xl leading-tight md:text-6xl">
+        <h2 className="mx-auto max-w-3xl font-display text-4xl leading-tight md:text-6xl">
           Tell us about the occasion.
         </h2>
         <div className="mt-10 flex flex-col items-center justify-center gap-6 md:flex-row md:gap-10">

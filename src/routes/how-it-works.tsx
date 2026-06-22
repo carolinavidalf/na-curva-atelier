@@ -50,9 +50,9 @@ function HowItWorks() {
       <section className="px-5 pb-16 pt-16 md:px-10 md:pb-24 md:pt-24">
         <div className="mx-auto max-w-5xl">
           <p className="eyebrow mb-6">How it works</p>
-          <h1 className="font-serif text-5xl leading-[1.02] tracking-tight md:text-8xl">
+          <h1 className="font-display text-5xl leading-[1.02] tracking-tight md:text-8xl">
             Four steps,
-            <span className="block italic text-muted-foreground">no friction.</span>
+            <span className="block text-coral">no friction.</span>
           </h1>
         </div>
       </section>
@@ -65,10 +65,10 @@ function HowItWorks() {
               i < STEPS.length - 1 ? "border-b border-border" : ""
             }`}
           >
-            <p className="font-serif text-5xl text-muted-foreground md:col-span-2 md:text-6xl">
+            <p className="font-display text-5xl text-muted-foreground md:col-span-2 md:text-6xl">
               {s.n}
             </p>
-            <h2 className="font-serif text-3xl leading-tight md:col-span-5 md:text-5xl">
+            <h2 className="font-display text-3xl leading-tight md:col-span-5 md:text-5xl">
               {s.t}
             </h2>
             <p className="text-[15px] leading-relaxed text-muted-foreground md:col-span-5">
@@ -79,7 +79,7 @@ function HowItWorks() {
       </section>
 
       <section className="border-t border-border bg-foreground px-5 py-24 text-center text-background md:py-32">
-        <h2 className="mx-auto max-w-3xl font-serif text-4xl leading-tight md:text-6xl">
+        <h2 className="mx-auto max-w-3xl font-display text-4xl leading-tight md:text-6xl">
           Ready to find your dress?
         </h2>
         <div className="mt-10 flex flex-col items-center justify-center gap-6 md:flex-row md:gap-10">

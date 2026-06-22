@@ -49,7 +49,7 @@ function CollectionPage() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
             <p className="eyebrow mb-4">The Collection</p>
-            <h1 className="font-serif text-5xl leading-[1] tracking-tight md:text-7xl">
+            <h1 className="font-display text-5xl leading-[1] tracking-tight md:text-7xl">
               Dresses
               <span className="ml-3 align-top text-base text-muted-foreground md:text-lg">
                 {dresses.length}
@@ -126,7 +126,7 @@ function CollectionPage() {
       <section className="px-5 py-12 md:px-10 md:py-16">
         {dresses.length === 0 ? (
           <div className="py-32 text-center">
-            <p className="font-serif text-2xl">Nothing matches yet.</p>
+            <p className="font-display text-2xl">Nothing matches yet.</p>
             <p className="mt-3 text-sm text-muted-foreground">
               Try a different occasion or size.
             </p>
@@ -157,7 +157,7 @@ function CollectionPage() {
                 </div>
                 <div className="mt-4 flex items-baseline justify-between gap-4">
                   <div>
-                    <p className="font-serif text-lg">{dress.name}</p>
+                    <p className="font-display text-lg">{dress.name}</p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {dress.designer}
                     </p>

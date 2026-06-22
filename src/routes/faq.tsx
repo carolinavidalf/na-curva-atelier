@@ -65,7 +65,7 @@ function FaqPage() {
       <section className="px-5 pb-16 pt-16 md:px-10 md:pb-24 md:pt-24">
         <div className="mx-auto max-w-5xl">
           <p className="eyebrow mb-6">Questions</p>
-          <h1 className="font-serif text-5xl leading-[1.02] tracking-tight md:text-8xl">
+          <h1 className="font-display text-5xl leading-[1.02] tracking-tight md:text-8xl">
             Good to know.
           </h1>
         </div>
@@ -83,10 +83,10 @@ function FaqPage() {
                       onClick={() => setOpen(isOpen ? null : i)}
                       className="flex w-full items-baseline justify-between gap-6 py-8 text-left md:py-10"
                     >
-                      <span className="font-serif text-2xl leading-snug md:text-3xl">
+                      <span className="font-display text-2xl leading-snug md:text-3xl">
                         {item.q}
                       </span>
-                      <span className="font-serif text-2xl text-muted-foreground">
+                      <span className="font-display text-2xl text-muted-foreground">
                         {isOpen ? "—" : "+"}
                       </span>
                     </button>
@@ -105,7 +105,7 @@ function FaqPage() {
 
       <section className="border-t border-border bg-bone px-5 py-24 text-center md:py-32">
         <p className="eyebrow mb-6">Still wondering?</p>
-        <h2 className="mx-auto max-w-3xl font-serif text-4xl leading-tight md:text-6xl">
+        <h2 className="mx-auto max-w-3xl font-display text-4xl leading-tight md:text-6xl">
           Send us a message.
         </h2>
         <a
