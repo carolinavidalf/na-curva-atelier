@@ -92,6 +92,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Na Curva — Curated Dress Rental" },
+      { name: "description", content: "Na Curva offers curated luxury dress rentals for special occasions, focusing on editorial style and aspirational access." },
+      { property: "og:description", content: "Na Curva offers curated luxury dress rentals for special occasions, focusing on editorial style and aspirational access." },
+      { name: "twitter:description", content: "Na Curva offers curated luxury dress rentals for special occasions, focusing on editorial style and aspirational access." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8e3f2837-2d4c-4917-93ad-65484f6d45c1/id-preview-f21a1e15--e48d679b-e8d1-40be-a83e-bd1f58799dee.lovable.app-1782144948525.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8e3f2837-2d4c-4917-93ad-65484f6d45c1/id-preview-f21a1e15--e48d679b-e8d1-40be-a83e-bd1f58799dee.lovable.app-1782144948525.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -99,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap",
       },
     ],
   }),
