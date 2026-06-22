@@ -131,10 +131,11 @@ function DressPage() {
               href={whatsappForDress(dress.name)}
               target="_blank"
               rel="noreferrer"
-              className="mt-2 block border border-foreground bg-foreground py-5 text-center text-sm tracking-[0.18em] text-background transition-colors hover:bg-background hover:text-foreground"
+              className="mt-2 block bg-coral py-5 text-center text-sm font-semibold tracking-[0.22em] text-primary-foreground transition-colors hover:bg-foreground"
             >
-              RESERVE VIA WHATSAPP
+              RESERVE VIA WHATSAPP →
             </a>
+
             <p className="-mt-4 text-center text-xs text-muted-foreground">
               No checkout. A real person will reply to confirm.
             </p>

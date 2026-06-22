@@ -62,11 +62,11 @@ function FaqPage() {
 
   return (
     <SiteLayout>
-      <section className="px-5 pb-16 pt-16 md:px-10 md:pb-24 md:pt-24">
+      <section className="bg-lavender px-5 pb-16 pt-16 md:px-10 md:pb-24 md:pt-24">
         <div className="mx-auto max-w-5xl">
-          <p className="eyebrow mb-6">Questions</p>
-          <h1 className="font-display text-5xl leading-[1.02] tracking-tight md:text-8xl">
-            Good to know.
+          <p className="eyebrow mb-6 text-coral">Questions ✸</p>
+          <h1 className="font-display text-6xl leading-[0.9] tracking-[-0.045em] md:text-[7rem]">
+            good to <span className="text-coral">know.</span>
           </h1>
         </div>
       </section>
@@ -83,10 +83,10 @@ function FaqPage() {
                       onClick={() => setOpen(isOpen ? null : i)}
                       className="flex w-full items-baseline justify-between gap-6 py-8 text-left md:py-10"
                     >
-                      <span className="font-display text-2xl leading-snug md:text-3xl">
+                      <span className="font-display text-2xl leading-snug tracking-tight md:text-3xl">
                         {item.q}
                       </span>
-                      <span className="font-display text-2xl text-muted-foreground">
+                      <span className="font-display text-3xl text-coral">
                         {isOpen ? "—" : "+"}
                       </span>
                     </button>
@@ -103,16 +103,16 @@ function FaqPage() {
         </div>
       </section>
 
-      <section className="border-t border-border bg-bone px-5 py-24 text-center md:py-32">
-        <p className="eyebrow mb-6">Still wondering?</p>
-        <h2 className="mx-auto max-w-3xl font-display text-4xl leading-tight md:text-6xl">
-          Send us a message.
+      <section className="border-t border-border bg-coral px-5 py-24 text-center text-background md:py-32">
+        <p className="eyebrow mb-6 text-peach">Still wondering? ✸</p>
+        <h2 className="mx-auto max-w-3xl font-display text-5xl leading-[0.92] md:text-7xl">
+          send us <span className="text-peach">a message.</span>
         </h2>
         <a
           href={WHATSAPP_GENERAL}
           target="_blank"
           rel="noreferrer"
-          className="mt-10 inline-block border-b border-foreground pb-1 text-sm"
+          className="mt-12 inline-block bg-background px-8 py-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-coral transition-colors hover:bg-lavender hover:text-foreground"
         >
           Reserve via WhatsApp →
         </a>
@@ -120,3 +120,4 @@ function FaqPage() {
     </SiteLayout>
   );
 }
+

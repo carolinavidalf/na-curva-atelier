@@ -45,32 +45,33 @@ function CollectionPage() {
   return (
     <SiteLayout>
       {/* Page header */}
-      <section className="border-b border-border px-5 pb-10 pt-12 md:px-10 md:pb-14 md:pt-20">
+      <section className="border-b border-border bg-lavender px-5 pb-12 pt-12 md:px-10 md:pb-16 md:pt-20">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
-          <div className="md:col-span-5">
-            <p className="eyebrow mb-4">The Collection</p>
-            <h1 className="font-display text-5xl leading-[1] tracking-tight md:text-7xl">
-              Dresses
-              <span className="ml-3 align-top text-base text-muted-foreground md:text-lg">
-                {dresses.length}
+          <div className="md:col-span-6">
+            <p className="eyebrow mb-4 text-coral">The Collection ✸</p>
+            <h1 className="font-display text-6xl leading-[0.9] tracking-[-0.045em] md:text-[6.5rem]">
+              dresses,
+              <span className="block text-coral">by the night.</span>
+              <span className="ml-2 align-top text-base text-foreground/60 md:text-lg">
+                ({dresses.length})
               </span>
             </h1>
           </div>
           <div className="md:col-span-4">
-            <p className="max-w-md text-[15px] leading-relaxed text-muted-foreground">
-              A small, intentional edit of pieces selected for the celebrations
-              that ask for something beautiful — weddings, dinners, evenings
-              that matter.
+            <p className="max-w-md text-[15px] leading-relaxed text-foreground/75">
+              A small, hand-picked edit for the celebrations that ask for
+              something a little louder — weddings, dinners, gallery openings,
+              weekends with the right people.
             </p>
           </div>
-          <div className="md:col-span-3 md:text-right">
-            <p className="eyebrow mb-2">View</p>
+          <div className="md:col-span-2 md:text-right">
+            <p className="eyebrow mb-2 text-foreground/60">View</p>
             <div className="flex gap-3 md:justify-end">
               {[2, 3, 4].map((n) => (
                 <button
                   key={n}
                   onClick={() => setCols(n as 2 | 3 | 4)}
-                  className={`text-sm ${cols === n ? "underline underline-offset-4" : "text-muted-foreground"}`}
+                  className={`text-sm font-medium ${cols === n ? "text-coral underline underline-offset-4" : "text-foreground/60 hover:text-foreground"}`}
                 >
                   {n}
                 </button>
@@ -79,6 +80,7 @@ function CollectionPage() {
           </div>
         </div>
       </section>
+
 
       {/* Filters */}
       <section className="sticky top-16 z-30 border-b border-border bg-background/90 backdrop-blur-sm md:top-20">

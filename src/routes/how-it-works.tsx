@@ -47,15 +47,16 @@ const STEPS = [
 function HowItWorks() {
   return (
     <SiteLayout>
-      <section className="px-5 pb-16 pt-16 md:px-10 md:pb-24 md:pt-24">
+      <section className="bg-lavender px-5 pb-20 pt-16 md:px-10 md:pb-28 md:pt-24">
         <div className="mx-auto max-w-5xl">
-          <p className="eyebrow mb-6">How it works</p>
-          <h1 className="font-display text-5xl leading-[1.02] tracking-tight md:text-8xl">
-            Four steps,
+          <p className="eyebrow mb-6 text-coral">How it works ✸</p>
+          <h1 className="font-display text-6xl leading-[0.9] tracking-[-0.045em] md:text-[7rem]">
+            four steps,
             <span className="block text-coral">no friction.</span>
           </h1>
         </div>
       </section>
+
 
       <section className="border-t border-border">
         {STEPS.map((s, i) => (
@@ -65,7 +66,7 @@ function HowItWorks() {
               i < STEPS.length - 1 ? "border-b border-border" : ""
             }`}
           >
-            <p className="font-display text-5xl text-muted-foreground md:col-span-2 md:text-6xl">
+            <p className="font-display text-5xl text-coral md:col-span-2 md:text-6xl">
               {s.n}
             </p>
             <h2 className="font-display text-3xl leading-tight md:col-span-5 md:text-5xl">
@@ -78,24 +79,28 @@ function HowItWorks() {
         ))}
       </section>
 
-      <section className="border-t border-border bg-foreground px-5 py-24 text-center text-background md:py-32">
-        <h2 className="mx-auto max-w-3xl font-display text-4xl leading-tight md:text-6xl">
-          Ready to find your dress?
+      <section className="border-t border-border bg-coral px-5 py-24 text-center text-background md:py-32">
+        <h2 className="mx-auto max-w-3xl font-display text-5xl leading-[0.92] md:text-7xl">
+          ready to find <span className="block text-peach">your dress?</span>
         </h2>
-        <div className="mt-10 flex flex-col items-center justify-center gap-6 md:flex-row md:gap-10">
-          <Link to="/collection" className="border-b border-background pb-1 text-sm">
+        <div className="mt-12 flex flex-col items-center justify-center gap-5 md:flex-row md:gap-6">
+          <Link
+            to="/collection"
+            className="inline-flex items-center gap-3 bg-background px-7 py-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-coral transition-colors hover:bg-lavender hover:text-foreground"
+          >
             Browse the collection →
           </Link>
           <a
             href={WHATSAPP_GENERAL}
             target="_blank"
             rel="noreferrer"
-            className="eyebrow link-underline text-background/80"
+            className="inline-flex items-center gap-3 border border-background/80 px-7 py-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-background transition-colors hover:bg-background hover:text-coral"
           >
             Reserve via WhatsApp
           </a>
         </div>
       </section>
+
     </SiteLayout>
   );
 }
