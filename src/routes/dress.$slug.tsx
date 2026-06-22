@@ -88,7 +88,7 @@ function DressPage() {
               <div className="border-t border-border pt-5">
                 <p className="eyebrow mb-3">Sizes</p>
                 <div className="flex flex-wrap gap-3">
-                  {dress.sizes.map((s) => (
+                  {dress.sizes.map((s: string) => (
                     <span
                       key={s}
                       className="border border-border px-4 py-2 text-sm"
@@ -120,7 +120,7 @@ function DressPage() {
               <div className="border-t border-border pt-5">
                 <p className="eyebrow mb-3">Details</p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  {dress.details.map((d) => (
+                  {dress.details.map((d: string) => (
                     <li key={d}>— {d}</li>
                   ))}
                 </ul>
