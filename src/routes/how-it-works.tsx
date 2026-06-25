@@ -4,19 +4,19 @@ import { ctaClass } from "@/components/cta-button";
 import { BrandShape } from "@/components/brand-shape";
 import { useT } from "@/i18n/locale-context";
 import { usePageMeta } from "@/i18n/use-page-meta";
+import { openGraphMeta } from "@/lib/open-graph";
 import { translations, DEFAULT_LOCALE } from "@/i18n/translations";
 import { whatsappUrl } from "@/lib/whatsapp";
 
 const defaultHow = translations[DEFAULT_LOCALE].howItWorks;
 
 export const Route = createFileRoute("/how-it-works")({
-  head: () => ({
-    meta: [
-      { title: defaultHow.metaTitle },
-      { name: "description", content: defaultHow.metaDescription },
-      { property: "og:title", content: defaultHow.metaTitle },
-      { property: "og:description", content: defaultHow.metaDescription },
-    ],
+  head: ({ match }) => ({
+    meta: openGraphMeta({
+      title: defaultHow.metaTitle,
+      description: defaultHow.metaDescription,
+      pathname: match.pathname,
+    }),
   }),
   component: HowItWorks,
 });

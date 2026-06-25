@@ -2,39 +2,47 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
 import { BrandShape } from "@/components/brand-shape";
-import { DRESSES, SIZES, type Size } from "@/lib/dresses";
-import { localizedDress } from "@/i18n/dress";
-import { useT } from "@/i18n/locale-context";
+import { getDressesWithTranslations, SIZES, type Size } from "@/lib/dresses";
+import { localizeDress } from "@/i18n/dress";
+import { useT, useLocale } from "@/i18n/locale-context";
 import { usePageMeta } from "@/i18n/use-page-meta";
+import { openGraphMeta } from "@/lib/open-graph";
 import { translations, DEFAULT_LOCALE } from "@/i18n/translations";
 
 const defaultCollection = translations[DEFAULT_LOCALE].collection;
 
 export const Route = createFileRoute("/collection")({
-  head: () => ({
-    meta: [
-      { title: defaultCollection.metaTitle },
-      { name: "description", content: defaultCollection.metaDescription },
-      { property: "og:title", content: defaultCollection.metaTitle },
-      { property: "og:description", content: defaultCollection.metaDescription },
-    ],
+  loader: async () => {
+    const dresses = await getDressesWithTranslations();
+    return { dresses };
+  },
+  head: ({ match }) => ({
+    meta: openGraphMeta({
+      title: defaultCollection.metaTitle,
+      description: defaultCollection.metaDescription,
+      pathname: match.pathname,
+    }),
   }),
   component: CollectionPage,
 });
 
 function CollectionPage() {
+  const { dresses: rawDresses } = Route.useLoaderData();
   const t = useT();
+  const { locale } = useLocale();
   usePageMeta(t.collection.metaTitle, t.collection.metaDescription);
 
   const [size, setSize] = useState<Size | null>(null);
   const [cols] = useState<2 | 3 | 4>(3);
 
   const dresses = useMemo(() => {
-    return DRESSES.filter((d) => {
-      if (size && !d.sizes.includes(size)) return false;
-      return true;
-    }).map((d) => localizedDress(d, t));
-  }, [size, t]);
+    return rawDresses
+      .filter((d) => {
+        if (size && !d.sizes.includes(size)) return false;
+        return true;
+      })
+      .map((d) => localizeDress(d, locale, t));
+  }, [rawDresses, size, locale, t]);
 
   const gridClass =
     cols === 2

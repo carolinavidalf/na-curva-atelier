@@ -5,19 +5,19 @@ import { ctaClass } from "@/components/cta-button";
 import { BrandShape } from "@/components/brand-shape";
 import { useT } from "@/i18n/locale-context";
 import { usePageMeta } from "@/i18n/use-page-meta";
+import { openGraphMeta } from "@/lib/open-graph";
 import { translations, DEFAULT_LOCALE } from "@/i18n/translations";
 import { whatsappUrl } from "@/lib/whatsapp";
 
 const defaultFaq = translations[DEFAULT_LOCALE].faq;
 
 export const Route = createFileRoute("/faq")({
-  head: () => ({
-    meta: [
-      { title: defaultFaq.metaTitle },
-      { name: "description", content: defaultFaq.metaDescription },
-      { property: "og:title", content: defaultFaq.metaTitle },
-      { property: "og:description", content: defaultFaq.metaDescription },
-    ],
+  head: ({ match }) => ({
+    meta: openGraphMeta({
+      title: defaultFaq.metaTitle,
+      description: defaultFaq.metaDescription,
+      pathname: match.pathname,
+    }),
   }),
   component: FaqPage,
 });

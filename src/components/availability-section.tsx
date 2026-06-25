@@ -11,16 +11,17 @@ import {
 } from "@/components/ui/dialog";
 import { useLocale, useT } from "@/i18n/locale-context";
 import { formatRentalDate, getRentalEndDate } from "@/lib/rental-period";
+import type { ReservationBlock } from "@/lib/reservations";
 
 type AvailabilitySectionProps = {
-  dressSlug: string;
+  reservations: ReservationBlock[];
   headingId?: string;
   confirmedRentalStart: Date | null;
   onConfirmRentalStart: (date: Date | null) => void;
 };
 
 export function AvailabilitySection({
-  dressSlug,
+  reservations,
   headingId = "dress-availability-heading",
   confirmedRentalStart,
   onConfirmRentalStart,
@@ -124,7 +125,7 @@ export function AvailabilitySection({
           </DialogHeader>
           <div className="mt-5">
             <AvailabilityCalendar
-              dressSlug={dressSlug}
+              reservations={reservations}
               monthLabelId={monthLabelId}
               size="modal"
               rentalStart={pendingRentalStart}

@@ -4,6 +4,7 @@ import { ctaClass } from "@/components/cta-button";
 import { BrandShape } from "@/components/brand-shape";
 import { useT } from "@/i18n/locale-context";
 import { usePageMeta } from "@/i18n/use-page-meta";
+import { openGraphMeta } from "@/lib/open-graph";
 import { translations, DEFAULT_LOCALE } from "@/i18n/translations";
 import { whatsappUrl } from "@/lib/whatsapp";
 import aboutImg from "@/assets/about.jpg";
@@ -11,13 +12,12 @@ import aboutImg from "@/assets/about.jpg";
 const defaultAbout = translations[DEFAULT_LOCALE].about;
 
 export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: defaultAbout.metaTitle },
-      { name: "description", content: defaultAbout.metaDescription },
-      { property: "og:title", content: defaultAbout.metaTitle },
-      { property: "og:description", content: defaultAbout.metaDescription },
-    ],
+  head: ({ match }) => ({
+    meta: openGraphMeta({
+      title: defaultAbout.metaTitle,
+      description: defaultAbout.metaDescription,
+      pathname: match.pathname,
+    }),
   }),
   component: AboutPage,
 });

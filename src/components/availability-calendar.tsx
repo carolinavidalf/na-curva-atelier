@@ -1,21 +1,33 @@
 import { useMemo, useState } from "react";
 import { useLocale, useT } from "@/i18n/locale-context";
 import {
+  getPeriodKeysForDays,
   getRentalPeriodKeys,
+  isPeriodStartValid,
   isRentalStartValid,
   parseDateKey,
 } from "@/lib/rental-period";
-import { expandReservationStarts, getReservationStarts, toDateKey } from "@/lib/reserved-dates";
+import {
+  expandReservationBlocks,
+  getPeriodKeysForBlock,
+  type ReservationBlock,
+  toDateKey,
+} from "@/lib/reservations";
 import { cn } from "@/lib/utils";
 
 type AvailabilityCalendarProps = {
-  dressSlug: string;
+  reservations: ReservationBlock[];
   monthLabelId?: string;
   size?: "default" | "modal";
   rentalStart: Date | null;
   onRentalStartChange: (date: Date | null) => void;
   selectionError: string | null;
   onSelectionError: (error: string | null) => void;
+  adminMode?: boolean;
+  adminBlockDays?: number;
+  adminPendingStart?: Date | null;
+  onAdminDayClick?: (date: Date) => void;
+  highlightedBlockStart?: string | null;
 };
 
 type CalendarDay = {
@@ -147,34 +159,45 @@ function RangeBar({
 }
 
 export function AvailabilityCalendar({
-  dressSlug,
+  reservations,
   monthLabelId = "availability-month-label",
   size = "default",
   rentalStart,
   onRentalStartChange,
   selectionError,
   onSelectionError,
+  adminMode = false,
+  adminBlockDays = 5,
+  adminPendingStart = null,
+  onAdminDayClick,
+  highlightedBlockStart = null,
 }: AvailabilityCalendarProps) {
   const t = useT();
   const { locale } = useLocale();
   const styles = sizeStyles[size];
   const today = useMemo(() => startOfToday(), []);
 
-  const reservationStarts = useMemo(() => getReservationStarts(dressSlug), [dressSlug]);
   const reserved = useMemo(
-    () => new Set(expandReservationStarts(reservationStarts)),
-    [reservationStarts],
+    () => new Set(expandReservationBlocks(reservations)),
+    [reservations],
   );
   const reservationPeriodByKey = useMemo(() => {
     const map = new Map<string, Set<string>>();
-    for (const startKey of reservationStarts) {
-      const periodKeys = new Set(getRentalPeriodKeys(parseDateKey(startKey)));
+    for (const block of reservations) {
+      const periodKeys = new Set(getPeriodKeysForBlock(block));
       for (const key of periodKeys) {
         map.set(key, periodKeys);
       }
     }
     return map;
-  }, [reservationStarts]);
+  }, [reservations]);
+
+  const highlightedKeys = useMemo(() => {
+    if (!highlightedBlockStart) return new Set<string>();
+    const block = reservations.find((item) => item.startDate === highlightedBlockStart);
+    if (!block) return new Set<string>();
+    return new Set(getPeriodKeysForBlock(block));
+  }, [highlightedBlockStart, reservations]);
 
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
@@ -185,10 +208,20 @@ export function AvailabilityCalendar({
     [rentalStart],
   );
 
-  const previewKeys = useMemo(
-    () => new Set(previewStart ? getRentalPeriodKeys(previewStart) : []),
-    [previewStart],
+  const adminPendingKeys = useMemo(
+    () =>
+      new Set(
+        adminPendingStart
+          ? getPeriodKeysForDays(adminPendingStart, adminBlockDays)
+          : [],
+      ),
+    [adminPendingStart, adminBlockDays],
   );
+
+  const previewKeys = useMemo(() => {
+    if (adminMode && adminPendingStart) return adminPendingKeys;
+    return new Set(previewStart ? getRentalPeriodKeys(previewStart) : []);
+  }, [adminMode, adminPendingKeys, adminPendingStart, previewStart]);
 
   const intlLocale = locale === "pt" ? "pt-PT" : "en-GB";
   const monthLabel = new Intl.DateTimeFormat(intlLocale, {
@@ -217,7 +250,7 @@ export function AvailabilityCalendar({
     for (const cell of cells) {
       if (!cell) continue;
       if (reserved.has(cell.key)) hasReserved = true;
-      if (selectedKeys.has(cell.key)) hasSelected = true;
+      if (selectedKeys.has(cell.key) || adminPendingKeys.has(cell.key)) hasSelected = true;
       if (hasReserved && hasSelected) break;
     }
 
@@ -225,7 +258,7 @@ export function AvailabilityCalendar({
       hasReservedInMonth: hasReserved,
       hasSelectedInMonth: hasSelected,
     };
-  }, [cells, reserved, selectedKeys]);
+  }, [cells, reserved, selectedKeys, adminPendingKeys]);
 
   const legendItemClass = (isActive: boolean) =>
     cn(
@@ -263,6 +296,19 @@ export function AvailabilityCalendar({
     const isPast = cell.date < today;
     const isReserved = reserved.has(cell.key);
 
+    if (adminMode) {
+      if (isPast) return;
+      onAdminDayClick?.(cell.date);
+      if (!isReserved) {
+        if (!isPeriodStartValid(cell.date, adminBlockDays, today, reserved)) {
+          onSelectionError("Those dates overlap an existing reservation.");
+          return;
+        }
+        onSelectionError(null);
+      }
+      return;
+    }
+
     if (isPast || isReserved) return;
 
     if (!isRentalStartValid(cell.date, today, reserved)) {
@@ -277,9 +323,12 @@ export function AvailabilityCalendar({
     setPreviewStart(null);
   };
 
-  const clearPreview = () => setPreviewStart(null);
+  const clearPreview = () => {
+    if (!adminMode) setPreviewStart(null);
+  };
 
   const handleDayPreview = (cell: CalendarDay) => {
+    if (adminMode) return;
     if (cell.date < today || reserved.has(cell.key)) return;
     setPreviewStart(cell.date);
   };
@@ -352,16 +401,21 @@ export function AvailabilityCalendar({
 
           const isPast = cell.date < today;
           const isReserved = reserved.has(cell.key);
-          const isSelected = selectedKeys.has(cell.key);
-          const isSelectable = !isPast && !isReserved;
+          const isSelected = selectedKeys.has(cell.key) || adminPendingKeys.has(cell.key);
+          const isHighlighted = highlightedKeys.has(cell.key);
+          const isSelectable = adminMode ? !isPast : !isPast && !isReserved;
           const reservedPeriod = isReserved ? reservationPeriodByKey.get(cell.key) : undefined;
           const reservedSegment = reservedPeriod
             ? getPeriodSegmentFlags(cells, index, reservedPeriod)
             : null;
           const selectedSegment = isSelected
-            ? getPeriodSegmentFlags(cells, index, selectedKeys)
+            ? getPeriodSegmentFlags(
+                cells,
+                index,
+                adminPendingKeys.size > 0 ? adminPendingKeys : selectedKeys,
+              )
             : null;
-          const inPreview = previewKeys.has(cell.key) && !isSelected;
+          const inPreview = previewKeys.has(cell.key) && !isSelected && !isReserved;
           const previewSegment = inPreview
             ? getPeriodSegmentFlags(cells, index, previewKeys)
             : null;
@@ -374,9 +428,15 @@ export function AvailabilityCalendar({
                 ? t.dress.legendSelected
                 : t.dress.legendAvailable;
 
-          const ariaLabel = isSelectable
-            ? `${formatDayLabel(cell.date)}, ${statusLabel}. ${t.dress.calendarSelectDay}`
-            : `${formatDayLabel(cell.date)}, ${statusLabel}`;
+          const ariaLabel = adminMode
+            ? isReserved
+              ? `${formatDayLabel(cell.date)}, ${statusLabel}`
+              : isPast
+                ? `${formatDayLabel(cell.date)}, ${statusLabel}`
+                : `${formatDayLabel(cell.date)}, ${statusLabel}. Select as rental start`
+            : isSelectable
+              ? `${formatDayLabel(cell.date)}, ${statusLabel}. ${t.dress.calendarSelectDay}`
+              : `${formatDayLabel(cell.date)}, ${statusLabel}`;
 
           return (
             <div
@@ -386,6 +446,7 @@ export function AvailabilityCalendar({
                 "relative flex items-center justify-center overflow-visible",
                 styles.row,
                 isSelected && "group/cell",
+                isHighlighted && "rounded-md ring-2 ring-coral/70 ring-offset-1",
               )}
             >
               <div className="pointer-events-none absolute inset-0" aria-hidden>
@@ -448,7 +509,7 @@ export function AvailabilityCalendar({
             )}
             aria-hidden
           />
-          {t.dress.legendSelected}
+          {adminMode ? "Selected period" : t.dress.legendSelected}
         </span>
       </div>
 
@@ -462,4 +523,21 @@ export function AvailabilityCalendar({
       )}
     </div>
   );
+}
+
+export function formatReservationBlockLabel(
+  block: ReservationBlock,
+  locale: "pt" | "en" = "en",
+): string {
+  const intlLocale = locale === "pt" ? "pt-PT" : "en-GB";
+  const start = parseDateKey(block.startDate);
+  const end = new Date(start);
+  end.setDate(end.getDate() + block.days - 1);
+  const fmt = new Intl.DateTimeFormat(intlLocale, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  const dayLabel = block.days === 1 ? "day" : "days";
+  return `${fmt.format(start)} – ${fmt.format(end)} (${block.days} ${dayLabel})`;
 }

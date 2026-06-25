@@ -7,18 +7,18 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ctaClass } from "../components/cta-button";
-import { LocaleProvider, useT } from "../i18n/locale-context";
+import { openGraphMeta } from "../lib/open-graph";
+import { LocaleProvider } from "../i18n/locale-context";
 import { translations, DEFAULT_LOCALE } from "../i18n/translations";
 
 const defaultMeta = translations[DEFAULT_LOCALE].meta;
 
 function NotFoundComponent() {
-  const t = useT();
+  const t = translations[DEFAULT_LOCALE];
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -42,13 +42,10 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  const t = useT();
+  const t = translations[DEFAULT_LOCALE];
   const router = useRouter();
 
   console.error(error);
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -80,29 +77,16 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  head: ({ match }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: defaultMeta.siteTitle },
-      { name: "description", content: defaultMeta.siteDescription },
       { name: "author", content: "Na Curva" },
-      { property: "og:title", content: defaultMeta.siteTitle },
-      { property: "og:description", content: defaultMeta.siteDescription },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: defaultMeta.siteTitle },
-      { name: "twitter:description", content: defaultMeta.siteDescription },
-      {
-        property: "og:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8e3f2837-2d4c-4917-93ad-65484f6d45c1/id-preview-f21a1e15--e48d679b-e8d1-40be-a83e-bd1f58799dee.lovable.app-1782144948525.png",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8e3f2837-2d4c-4917-93ad-65484f6d45c1/id-preview-f21a1e15--e48d679b-e8d1-40be-a83e-bd1f58799dee.lovable.app-1782144948525.png",
-      },
+      ...openGraphMeta({
+        title: defaultMeta.siteTitle,
+        description: defaultMeta.siteDescription,
+        pathname: match.pathname,
+      }),
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -122,13 +106,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const { queryClient } = Route.useRouteContext();
+
   return (
     <html lang="pt-PT">
       <head>
         <HeadContent />
       </head>
       <body>
-        {children}
+        <QueryClientProvider client={queryClient}>
+          <LocaleProvider>{children}</LocaleProvider>
+        </QueryClientProvider>
         <Scripts />
       </body>
     </html>
@@ -136,13 +124,5 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <LocaleProvider>
-        <Outlet />
-      </LocaleProvider>
-    </QueryClientProvider>
-  );
+  return <Outlet />;
 }

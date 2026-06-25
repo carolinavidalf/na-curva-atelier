@@ -4,10 +4,11 @@ import { Wordmark } from "@/components/wordmark";
 import { BrandShape } from "@/components/brand-shape";
 import { ctaClass } from "@/components/cta-button";
 import { UnderlineLink } from "@/components/underline-link";
-import { DRESSES } from "@/lib/dresses";
-import { localizedDress } from "@/i18n/dress";
-import { useT } from "@/i18n/locale-context";
+import { getDressesWithTranslations } from "@/lib/dresses";
+import { localizeDress } from "@/i18n/dress";
+import { useT, useLocale } from "@/i18n/locale-context";
 import { usePageMeta } from "@/i18n/use-page-meta";
+import { openGraphMeta } from "@/lib/open-graph";
 import { translations, DEFAULT_LOCALE } from "@/i18n/translations";
 import { whatsappUrl } from "@/lib/whatsapp";
 import heroImg from "@/assets/hero.jpg";
@@ -17,22 +18,27 @@ import editorial2 from "@/assets/editorial-2.jpg";
 const defaultHome = translations[DEFAULT_LOCALE].home;
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: defaultHome.metaTitle },
-      { name: "description", content: defaultHome.metaDescription },
-      { property: "og:title", content: defaultHome.metaTitle },
-      { property: "og:description", content: defaultHome.metaDescription },
-    ],
+  loader: async () => {
+    const dresses = await getDressesWithTranslations();
+    return { dresses };
+  },
+  head: ({ match }) => ({
+    meta: openGraphMeta({
+      title: defaultHome.metaTitle,
+      description: defaultHome.metaDescription,
+      pathname: match.pathname,
+    }),
   }),
   component: HomePage,
 });
 
 function HomePage() {
+  const { dresses: rawDresses } = Route.useLoaderData();
   const t = useT();
+  const { locale } = useLocale();
   usePageMeta(t.home.metaTitle, t.home.metaDescription);
 
-  const featured = DRESSES.slice(0, 4).map((dress) => localizedDress(dress, t));
+  const featured = rawDresses.slice(0, 4).map((dress) => localizeDress(dress, locale, t));
   const whatsappHref = whatsappUrl(t.whatsapp.general);
 
   return (

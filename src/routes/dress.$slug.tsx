@@ -1,34 +1,47 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { DRESSES, getDress } from "@/lib/dresses";
-import { localizedDress } from "@/i18n/dress";
+import { getDressesWithTranslations } from "@/lib/dresses";
+import { localizeDress } from "@/i18n/dress";
 import { useT, useLocale } from "@/i18n/locale-context";
 import { usePageMeta } from "@/i18n/use-page-meta";
 import { translations, DEFAULT_LOCALE } from "@/i18n/translations";
 import { AvailabilitySection } from "@/components/availability-section";
 import { UnderlineLink } from "@/components/underline-link";
-import { formatRentalDate, formatRentalDateWhatsApp, getRentalEndDate } from "@/lib/rental-period";
+import { formatRentalDateWhatsApp, getRentalEndDate } from "@/lib/rental-period";
+import { openGraphMeta } from "@/lib/open-graph";
+import { getReservationBlocks } from "@/lib/reservations";
 import { whatsappUrl } from "@/lib/whatsapp";
 import { ctaClass } from "@/components/cta-button";
 
 export const Route = createFileRoute("/dress/$slug")({
-  loader: ({ params }) => {
-    const dress = getDress(params.slug);
+  loader: async ({ params }) => {
+    const [dresses, reservations] = await Promise.all([
+      getDressesWithTranslations(),
+      getReservationBlocks(params.slug),
+    ]);
+    const dress = dresses.find((item) => item.slug === params.slug);
     if (!dress) throw notFound();
-    return { dress };
+    return { dress, dresses, reservations };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, match }) => {
     if (!loaderData) return { meta: [] };
-    const copy = translations[DEFAULT_LOCALE].dresses[loaderData.dress.slug];
+    const localized = localizeDress(
+      loaderData.dress,
+      DEFAULT_LOCALE,
+      translations[DEFAULT_LOCALE],
+    );
+    const title = `${localized.name} — Na Curva`;
     return {
-      meta: [
-        { title: `${copy.name} — Na Curva` },
-        { name: "description", content: copy.description },
-        { property: "og:title", content: `${copy.name} — Na Curva` },
-        { property: "og:description", content: copy.description },
-        { property: "og:image", content: loaderData.dress.image },
-      ],
+      meta: openGraphMeta({
+        title,
+        description: localized.description,
+        pathname: match.pathname,
+        image: localized.image,
+        imageWidth: 1024,
+        imageHeight: 1280,
+        type: "article",
+      }),
     };
   },
   component: DressPage,
@@ -68,13 +81,18 @@ function DressError() {
 }
 
 function DressPage() {
-  const { dress: rawDress } = Route.useLoaderData();
+  const { dress: rawDress, dresses, reservations } = Route.useLoaderData();
   const t = useT();
   const { locale } = useLocale();
-  const dress = localizedDress(rawDress, t);
-  const related = DRESSES.filter((d) => d.slug !== dress.slug)
-    .slice(0, 3)
-    .map((d) => localizedDress(d, t));
+  const dress = localizeDress(rawDress, locale, t);
+  const related = useMemo(
+    () =>
+      dresses
+        .filter((item) => item.slug !== dress.slug)
+        .slice(0, 3)
+        .map((item) => localizeDress(item, locale, t)),
+    [dress.slug, dresses, locale, t],
+  );
   const [confirmedRentalStart, setConfirmedRentalStart] = useState<Date | null>(null);
 
   usePageMeta(`${dress.name} — Na Curva`, dress.description);
@@ -121,7 +139,7 @@ function DressPage() {
 
             <div className="space-y-5">
               <AvailabilitySection
-                dressSlug={dress.slug}
+                reservations={reservations}
                 confirmedRentalStart={confirmedRentalStart}
                 onConfirmRentalStart={setConfirmedRentalStart}
               />

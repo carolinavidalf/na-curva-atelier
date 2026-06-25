@@ -1,13 +1,7 @@
-import dress1 from "@/assets/dress-1.jpg";
-import dress2 from "@/assets/dress-2.jpg";
-import dress3 from "@/assets/dress-3.jpg";
-import dress4 from "@/assets/dress-4.jpg";
-import dress5 from "@/assets/dress-5.jpg";
-import dress6 from "@/assets/dress-6.jpg";
-import dress7 from "@/assets/dress-7.jpg";
-import dress8 from "@/assets/dress-8.jpg";
-import type { DressSlug, OccasionKey } from "@/i18n/translations";
+import type { Locale, OccasionKey } from "@/i18n/translations";
 import { OCCASION_KEYS } from "@/i18n/translations";
+import { getStaticDressesWithTranslations } from "@/lib/dresses-static";
+import { getDressImagePublicUrl, isSupabaseConfigured, supabaseFetch } from "@/lib/supabase";
 
 export type Occasion = OccasionKey;
 
@@ -16,100 +10,114 @@ export const OCCASIONS = OCCASION_KEYS;
 export const SIZES = ["XS", "S", "M", "L"] as const;
 export type Size = (typeof SIZES)[number];
 
-export interface Dress {
-  slug: DressSlug;
+export type DressCopy = {
+  name: string;
+  description: string;
+  details: string[];
+};
+
+export type DressRecord = {
+  slug: string;
   designer: string;
   price: number;
   retail: number;
   sizes: Size[];
   occasions: OccasionKey[];
-  image: string;
   available: boolean;
+  sortOrder: number;
+};
+
+export type DressWithTranslations = DressRecord & {
+  image: string;
+  translations: Partial<Record<Locale, DressCopy>>;
+};
+
+export type Dress = DressRecord & DressCopy & {
+  image: string;
+  occasionLabels: string[];
+};
+
+type DressTranslationRow = {
+  locale: string;
+  name: string;
+  description: string;
+  details: string[];
+};
+
+type DressRow = {
+  slug: string;
+  designer: string;
+  price: number;
+  retail: number;
+  sizes: string[];
+  occasions: string[];
+  image_url: string;
+  available: boolean;
+  sort_order: number;
+  dress_translations: DressTranslationRow[] | null;
+};
+
+function isOccasionKey(value: string): value is OccasionKey {
+  return (OCCASION_KEYS as readonly string[]).includes(value);
 }
 
-export const DRESSES: Dress[] = [
-  {
-    slug: "the-bias-slip",
-    designer: "Galvan",
-    price: 95,
-    retail: 720,
-    sizes: ["XS", "S", "M"],
-    occasions: ["blackTie", "dinner", "party"],
-    image: dress1,
-    available: true,
-  },
-  {
-    slug: "the-poplin-shirt-dress",
-    designer: "Toteme",
-    price: 65,
-    retail: 480,
-    sizes: ["S", "M", "L"],
-    occasions: ["dinner", "holiday", "summerEvent"],
-    image: dress2,
-    available: true,
-  },
-  {
-    slug: "the-burgundy-gown",
-    designer: "Bernadette",
-    price: 140,
-    retail: 1180,
-    sizes: ["XS", "S", "M"],
-    occasions: ["blackTie", "weddingGuest"],
-    image: dress3,
-    available: true,
-  },
-  {
-    slug: "the-olive-linen",
-    designer: "Matteau",
-    price: 70,
-    retail: 540,
-    sizes: ["XS", "S", "M", "L"],
-    occasions: ["summerEvent", "holiday", "dinner"],
-    image: dress4,
-    available: true,
-  },
-  {
-    slug: "the-tuxedo-mini",
-    designer: "The Frankie Shop",
-    price: 85,
-    retail: 620,
-    sizes: ["XS", "S", "M"],
-    occasions: ["party", "dinner", "blackTie"],
-    image: dress5,
-    available: true,
-  },
-  {
-    slug: "the-tiered-sun-dress",
-    designer: "Sleeper",
-    price: 60,
-    retail: 395,
-    sizes: ["S", "M", "L"],
-    occasions: ["summerEvent", "holiday", "weddingGuest"],
-    image: dress6,
-    available: false,
-  },
-  {
-    slug: "the-champagne-slip",
-    designer: "Rixo",
-    price: 110,
-    retail: 850,
-    sizes: ["XS", "S", "M"],
-    occasions: ["blackTie", "party", "weddingGuest"],
-    image: dress7,
-    available: true,
-  },
-  {
-    slug: "the-cacao-wrap",
-    designer: "Diane von Furstenberg",
-    price: 75,
-    retail: 580,
-    sizes: ["XS", "S", "M", "L"],
-    occasions: ["dinner", "weddingGuest", "holiday"],
-    image: dress8,
-    available: true,
-  },
-];
+function isSize(value: string): value is Size {
+  return (SIZES as readonly string[]).includes(value);
+}
 
-export function getDress(slug: string): Dress | undefined {
-  return DRESSES.find((d) => d.slug === slug);
+function mapDressRow(row: DressRow): DressWithTranslations {
+  const translations: Partial<Record<Locale, DressCopy>> = {};
+
+  for (const entry of row.dress_translations ?? []) {
+    if (entry.locale === "pt" || entry.locale === "en") {
+      translations[entry.locale] = {
+        name: entry.name,
+        description: entry.description,
+        details: entry.details,
+      };
+    }
+  }
+
+  return {
+    slug: row.slug,
+    designer: row.designer,
+    price: row.price,
+    retail: row.retail,
+    sizes: row.sizes.filter(isSize),
+    occasions: row.occasions.filter(isOccasionKey),
+    available: row.available,
+    sortOrder: row.sort_order,
+    image: getDressImagePublicUrl(row.image_url, row.slug),
+    translations,
+  };
+}
+
+async function fetchDressesFromSupabase(): Promise<DressWithTranslations[]> {
+  const { data, error } = await supabaseFetch<DressRow[]>("dresses", {
+    select:
+      "slug,designer,price,retail,sizes,occasions,image_url,available,sort_order,dress_translations(locale,name,description,details)",
+    order: "sort_order.asc",
+  });
+
+  if (error || !data) {
+    console.error("[dresses] Supabase fetch failed:", error);
+    return getStaticDressesWithTranslations();
+  }
+
+  return data.map(mapDressRow);
+}
+
+export async function getDressesWithTranslations(): Promise<DressWithTranslations[]> {
+  if (!isSupabaseConfigured()) {
+    return getStaticDressesWithTranslations();
+  }
+
+  return fetchDressesFromSupabase();
+}
+
+export async function getDressWithTranslations(
+  slug: string,
+): Promise<DressWithTranslations | undefined> {
+  const dresses = await getDressesWithTranslations();
+  return dresses.find((dress) => dress.slug === slug);
 }
