@@ -1,5 +1,5 @@
-// Update this number with the real Na Curva WhatsApp business line.
-export const WHATSAPP_NUMBER = "351900000000";
+// Na Curva WhatsApp: +351 910 893 011
+export const WHATSAPP_NUMBER = "351910893011";
 
 export function whatsappUrl(message: string): string {
   const text = encodeURIComponent(message);
