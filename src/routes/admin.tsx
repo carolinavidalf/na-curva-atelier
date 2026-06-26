@@ -11,9 +11,25 @@ import {
   fetchAdminReservations,
   removeAdminReservation,
   updateAdminDress,
+  uploadAdminDressImage,
   verifyAdminLogin,
   type AdminDress,
 } from "@/lib/admin-fns";
+
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+type AcceptedImageType = (typeof ACCEPTED_IMAGE_TYPES)[number];
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.split(",")[1] ?? "");
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 const ADMIN_SESSION_KEY = "na-curva-admin-password";
 
@@ -44,6 +60,7 @@ function AdminPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const [designer, setDesigner] = useState("");
   const [price, setPrice] = useState(0);
@@ -200,6 +217,45 @@ function AdminPage() {
       setErrorMessage(error instanceof Error ? error.message : String(error));
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleImageUpload = async (file: File) => {
+    if (!adminPassword || !selectedSlug) return;
+
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type as AcceptedImageType)) {
+      setErrorMessage("Please choose a JPG, PNG, or WebP image.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMessage("Image must be 5 MB or smaller.");
+      return;
+    }
+
+    setIsUploadingImage(true);
+    setErrorMessage(null);
+    try {
+      const dataBase64 = await fileToBase64(file);
+      const result = await uploadAdminDressImage({
+        data: {
+          adminPassword,
+          slug: selectedSlug,
+          contentType: file.type as AcceptedImageType,
+          dataBase64,
+        },
+      });
+      setDresses((current) =>
+        current.map((dress) =>
+          dress.slug === selectedSlug
+            ? { ...dress, imageUrl: result.imageUrl, image: result.image }
+            : dress,
+        ),
+      );
+      setStatusMessage("Photo updated.");
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setIsUploadingImage(false);
     }
   };
 
@@ -500,6 +556,39 @@ function AdminPage() {
               </section>
             ) : (
               <form onSubmit={handleSaveDress} className="space-y-8">
+                <section className="space-y-4">
+                  <h2 className="eyebrow">Photo</h2>
+                  <div className="flex flex-wrap items-start gap-6">
+                    {selectedDress && (
+                      <img
+                        src={selectedDress.image}
+                        alt=""
+                        className="aspect-[4/5] w-40 object-cover"
+                      />
+                    )}
+                    <div className="space-y-3">
+                      <label className="block">
+                        <span className="sr-only">Upload dress photo</span>
+                        <input
+                          type="file"
+                          accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                          disabled={isUploadingImage}
+                          onChange={(event) => {
+                            const file = event.target.files?.[0];
+                            event.target.value = "";
+                            if (file) void handleImageUpload(file);
+                          }}
+                          className="text-sm file:mr-3 file:border file:border-border file:bg-background file:px-3 file:py-2 file:text-sm"
+                        />
+                      </label>
+                      <p className="text-sm text-muted-foreground">
+                        JPG, PNG, or WebP, max 5 MB. Portrait photos work best.
+                        {isUploadingImage ? " Uploading…" : ""}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+
                 <section className="grid gap-4 sm:grid-cols-3">
                   <label className="block space-y-2 sm:col-span-3">
                     <span className="eyebrow">Designer</span>

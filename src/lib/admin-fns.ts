@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { getDressImagePublicUrl } from "@/lib/supabase";
 
 const adminAuth = z.object({ adminPassword: z.string().min(1) });
 
@@ -32,6 +33,14 @@ const adminRemoveReservationSchema = adminAuth.extend({
   startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
 
+const adminImageUploadSchema = adminAuth.extend({
+  slug: z.string().min(1),
+  contentType: z.enum(["image/jpeg", "image/png", "image/webp"]),
+  dataBase64: z.string().min(1).max(8_000_000),
+});
+
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
 type AdminConfig = { url: string; serviceKey: string };
 
 type DressAdminRow = {
@@ -60,6 +69,8 @@ export type AdminDress = {
   price: number;
   retail: number;
   available: boolean;
+  imageUrl: string;
+  image: string;
   translations: {
     pt: { name: string; description: string; details: string[] };
     en: { name: string; description: string; details: string[] };
@@ -240,6 +251,8 @@ function mapAdminDress(row: DressAdminRow): AdminDress {
     price: row.price,
     retail: row.retail,
     available: row.available,
+    imageUrl: row.image_url,
+    image: getDressImagePublicUrl(row.image_url, row.slug),
     translations: {
       pt: { name: pt.name, description: pt.description, details: pt.details },
       en: { name: en.name, description: en.description, details: en.details },
@@ -254,6 +267,40 @@ async function getDressIdBySlug(slug: string): Promise<string> {
   const row = rows[0];
   if (!row) throw new Error(`Dress not found: ${slug}`);
   return row.id;
+}
+
+function extensionForContentType(contentType: string): string {
+  switch (contentType) {
+    case "image/png":
+      return ".png";
+    case "image/webp":
+      return ".webp";
+    default:
+      return ".jpg";
+  }
+}
+
+async function adminStorageUpload(
+  path: string,
+  body: Uint8Array,
+  contentType: string,
+): Promise<void> {
+  const { url, serviceKey } = getAdminConfig();
+  const response = await fetch(`${url}/storage/v1/object/dress-images/${path}`, {
+    method: "POST",
+    headers: {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      "Content-Type": contentType,
+      "x-upsert": "true",
+    },
+    body: body,
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || `Image upload failed (${response.status})`);
+  }
 }
 
 export const verifyAdminLogin = createServerFn({ method: "POST" })
@@ -348,4 +395,41 @@ export const updateAdminDress = createServerFn({ method: "POST" })
     }
 
     return { ok: true as const };
+  });
+
+export const uploadAdminDressImage = createServerFn({ method: "POST" })
+  .validator(adminImageUploadSchema)
+  .handler(async ({ data }) => {
+    assertAdmin(data.adminPassword);
+
+    const bytes = Buffer.from(data.dataBase64, "base64");
+    if (bytes.byteLength > MAX_IMAGE_BYTES) {
+      throw new Error("Image must be 5 MB or smaller.");
+    }
+    if (bytes.byteLength === 0) {
+      throw new Error("Image file is empty.");
+    }
+
+    const ext = extensionForContentType(data.contentType);
+    const fileName = `${data.slug}${ext}`;
+    const version = Date.now();
+    const storageRef = `${fileName}?v=${version}`;
+
+    await adminStorageUpload(fileName, bytes, data.contentType);
+
+    await adminFetch("PATCH", "dresses", {
+      searchParams: { slug: `eq.${data.slug}` },
+      body: {
+        image_url: `storage:${storageRef}`,
+        updated_at: new Date().toISOString(),
+      },
+      prefer: "return=minimal",
+    });
+
+    const imageUrl = `storage:${storageRef}`;
+    return {
+      ok: true as const,
+      imageUrl,
+      image: getDressImagePublicUrl(imageUrl, data.slug),
+    };
   });

@@ -19,10 +19,11 @@ type AvailabilityCalendarProps = {
   reservations: ReservationBlock[];
   monthLabelId?: string;
   size?: "default" | "modal";
-  rentalStart: Date | null;
-  onRentalStartChange: (date: Date | null) => void;
-  selectionError: string | null;
-  onSelectionError: (error: string | null) => void;
+  readOnly?: boolean;
+  rentalStart?: Date | null;
+  onRentalStartChange?: (date: Date | null) => void;
+  selectionError?: string | null;
+  onSelectionError?: (error: string | null) => void;
   adminMode?: boolean;
   adminBlockDays?: number;
   adminPendingStart?: Date | null;
@@ -162,9 +163,10 @@ export function AvailabilityCalendar({
   reservations,
   monthLabelId = "availability-month-label",
   size = "default",
-  rentalStart,
+  readOnly = false,
+  rentalStart = null,
   onRentalStartChange,
-  selectionError,
+  selectionError = null,
   onSelectionError,
   adminMode = false,
   adminBlockDays = 5,
@@ -244,6 +246,18 @@ export function AvailabilityCalendar({
   );
 
   const { hasReservedInMonth, hasSelectedInMonth } = useMemo(() => {
+    if (readOnly) {
+      let hasReserved = false;
+      for (const cell of cells) {
+        if (!cell) continue;
+        if (reserved.has(cell.key)) {
+          hasReserved = true;
+          break;
+        }
+      }
+      return { hasReservedInMonth: hasReserved, hasSelectedInMonth: false };
+    }
+
     let hasReserved = false;
     let hasSelected = false;
 
@@ -258,7 +272,7 @@ export function AvailabilityCalendar({
       hasReservedInMonth: hasReserved,
       hasSelectedInMonth: hasSelected,
     };
-  }, [cells, reserved, selectedKeys, adminPendingKeys]);
+  }, [cells, reserved, selectedKeys, adminPendingKeys, readOnly]);
 
   const legendItemClass = (isActive: boolean) =>
     cn(
@@ -293,6 +307,8 @@ export function AvailabilityCalendar({
     }).format(date);
 
   const handleDaySelect = (cell: CalendarDay) => {
+    if (readOnly) return;
+
     const isPast = cell.date < today;
     const isReserved = reserved.has(cell.key);
 
@@ -301,10 +317,10 @@ export function AvailabilityCalendar({
       onAdminDayClick?.(cell.date);
       if (!isReserved) {
         if (!isPeriodStartValid(cell.date, adminBlockDays, today, reserved)) {
-          onSelectionError("Those dates overlap an existing reservation.");
+          onSelectionError?.("Those dates overlap an existing reservation.");
           return;
         }
-        onSelectionError(null);
+        onSelectionError?.(null);
       }
       return;
     }
@@ -312,23 +328,24 @@ export function AvailabilityCalendar({
     if (isPast || isReserved) return;
 
     if (!isRentalStartValid(cell.date, today, reserved)) {
-      onRentalStartChange(null);
-      onSelectionError(t.dress.rentalPeriodError);
+      onRentalStartChange?.(null);
+      onSelectionError?.(t.dress.rentalPeriodError);
       setPreviewStart(null);
       return;
     }
 
-    onSelectionError(null);
-    onRentalStartChange(cell.date);
+    onSelectionError?.(null);
+    onRentalStartChange?.(cell.date);
     setPreviewStart(null);
   };
 
   const clearPreview = () => {
-    if (!adminMode) setPreviewStart(null);
+    if (readOnly || adminMode) return;
+    setPreviewStart(null);
   };
 
   const handleDayPreview = (cell: CalendarDay) => {
-    if (adminMode) return;
+    if (readOnly || adminMode) return;
     if (cell.date < today || reserved.has(cell.key)) return;
     setPreviewStart(cell.date);
   };
@@ -371,7 +388,7 @@ export function AvailabilityCalendar({
       <div
         role="grid"
         aria-labelledby={monthLabelId}
-        onMouseLeave={clearPreview}
+        onMouseLeave={readOnly ? undefined : clearPreview}
         className={cn("grid grid-cols-7", styles.gridGap, styles.headerMt)}
       >
         {weekdayLabels.map((label, i) => (
@@ -401,9 +418,14 @@ export function AvailabilityCalendar({
 
           const isPast = cell.date < today;
           const isReserved = reserved.has(cell.key);
-          const isSelected = selectedKeys.has(cell.key) || adminPendingKeys.has(cell.key);
+          const isSelected =
+            !readOnly && (selectedKeys.has(cell.key) || adminPendingKeys.has(cell.key));
           const isHighlighted = highlightedKeys.has(cell.key);
-          const isSelectable = adminMode ? !isPast : !isPast && !isReserved;
+          const isSelectable = readOnly
+            ? false
+            : adminMode
+              ? !isPast
+              : !isPast && !isReserved;
           const reservedPeriod = isReserved ? reservationPeriodByKey.get(cell.key) : undefined;
           const reservedSegment = reservedPeriod
             ? getPeriodSegmentFlags(cells, index, reservedPeriod)
@@ -415,7 +437,8 @@ export function AvailabilityCalendar({
                 adminPendingKeys.size > 0 ? adminPendingKeys : selectedKeys,
               )
             : null;
-          const inPreview = previewKeys.has(cell.key) && !isSelected && !isReserved;
+          const inPreview =
+            !readOnly && previewKeys.has(cell.key) && !isSelected && !isReserved;
           const previewSegment = inPreview
             ? getPeriodSegmentFlags(cells, index, previewKeys)
             : null;
@@ -428,15 +451,33 @@ export function AvailabilityCalendar({
                 ? t.dress.legendSelected
                 : t.dress.legendAvailable;
 
-          const ariaLabel = adminMode
-            ? isReserved
-              ? `${formatDayLabel(cell.date)}, ${statusLabel}`
-              : isPast
+          const ariaLabel = readOnly
+            ? `${formatDayLabel(cell.date)}, ${statusLabel}`
+            : adminMode
+              ? isReserved
                 ? `${formatDayLabel(cell.date)}, ${statusLabel}`
-                : `${formatDayLabel(cell.date)}, ${statusLabel}. Select as rental start`
-            : isSelectable
-              ? `${formatDayLabel(cell.date)}, ${statusLabel}. ${t.dress.calendarSelectDay}`
-              : `${formatDayLabel(cell.date)}, ${statusLabel}`;
+                : isPast
+                  ? `${formatDayLabel(cell.date)}, ${statusLabel}`
+                  : `${formatDayLabel(cell.date)}, ${statusLabel}. Select as rental start`
+              : isSelectable
+                ? `${formatDayLabel(cell.date)}, ${statusLabel}. ${t.dress.calendarSelectDay}`
+                : `${formatDayLabel(cell.date)}, ${statusLabel}`;
+
+          const dayClassName = cn(
+            "relative z-10 flex items-center justify-center rounded-md tabular-nums leading-none",
+            styles.cell,
+            styles.dayText,
+            isPast && "text-muted-foreground/30",
+            isSelectable && "cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-coral focus-visible:ring-offset-1",
+            isSelectable &&
+              !isSelected &&
+              !inPreview &&
+              "text-foreground/85 hover:bg-foreground/6",
+            isReserved &&
+              "font-medium text-reserved-foreground line-through decoration-reserved-foreground/55",
+            inPreview && !isReserved && "text-foreground/85",
+            isSelected && "font-medium text-primary-foreground",
+          );
 
           return (
             <div
@@ -451,34 +492,29 @@ export function AvailabilityCalendar({
             >
               <div className="pointer-events-none absolute inset-0" aria-hidden>
                 <RangeBar segment={reservedSegment} variant="reserved" />
-                <RangeBar segment={previewSegment} variant="preview" />
-                <RangeBar segment={selectedSegment} variant="selected" />
+                {!readOnly && <RangeBar segment={previewSegment} variant="preview" />}
+                {!readOnly && <RangeBar segment={selectedSegment} variant="selected" />}
               </div>
-              <button
-                type="button"
-                disabled={!isSelectable}
-                onClick={() => handleDaySelect(cell)}
-                onMouseEnter={() => handleDayPreview(cell)}
-                aria-label={ariaLabel}
-                aria-pressed={isSelected}
-                className={cn(
-                  "relative z-10 flex items-center justify-center rounded-md tabular-nums leading-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-coral focus-visible:ring-offset-1 disabled:cursor-not-allowed",
-                  styles.cell,
-                  styles.dayText,
-                  isPast && "text-muted-foreground/30",
-                  isSelectable && "cursor-pointer",
-                  isSelectable &&
-                    !isSelected &&
-                    !inPreview &&
-                    "text-foreground/85 hover:bg-foreground/6",
-                  isReserved &&
-                    "font-medium text-reserved-foreground line-through decoration-reserved-foreground/55",
-                  inPreview && !isReserved && "text-foreground/85",
-                  isSelected && "font-medium text-primary-foreground",
-                )}
-              >
-                {cell.day}
-              </button>
+              {readOnly ? (
+                <span aria-label={ariaLabel} className={dayClassName}>
+                  {cell.day}
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  disabled={!isSelectable}
+                  onClick={() => handleDaySelect(cell)}
+                  onMouseEnter={() => handleDayPreview(cell)}
+                  aria-label={ariaLabel}
+                  aria-pressed={isSelected}
+                  className={cn(
+                    dayClassName,
+                    "disabled:cursor-not-allowed",
+                  )}
+                >
+                  {cell.day}
+                </button>
+              )}
             </div>
           );
         })}
@@ -501,19 +537,21 @@ export function AvailabilityCalendar({
           />
           {t.dress.legendReserved}
         </span>
-        <span className={legendItemClass(hasSelectedInMonth)}>
-          <span
-            className={cn(
-              "shrink-0 rounded-l-sm rounded-r-sm bg-coral",
-              styles.legendSwatch,
-            )}
-            aria-hidden
-          />
-          {adminMode ? "Selected period" : t.dress.legendSelected}
-        </span>
+        {!readOnly && (
+          <span className={legendItemClass(hasSelectedInMonth)}>
+            <span
+              className={cn(
+                "shrink-0 rounded-l-sm rounded-r-sm bg-coral",
+                styles.legendSwatch,
+              )}
+              aria-hidden
+            />
+            {adminMode ? "Selected period" : t.dress.legendSelected}
+          </span>
+        )}
       </div>
 
-      {selectionError && (
+      {!readOnly && selectionError && (
         <p
           className={cn("text-[13px] leading-relaxed text-coral", styles.legendMt)}
           role="alert"

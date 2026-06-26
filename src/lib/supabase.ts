@@ -67,9 +67,15 @@ export function getDressImagePublicUrl(imageUrl: string, slug: string): string {
     return imageUrl;
   }
 
-  // Use bundled photos for known slugs until images are uploaded to Supabase Storage.
+  if (imageUrl.startsWith("storage:") && isSupabaseConfigured()) {
+    const { url } = getSupabaseConfig();
+    const storageRef = imageUrl.slice("storage:".length);
+    return `${url}/storage/v1/object/public/dress-images/${storageRef}`;
+  }
+
+  // Legacy seed filenames — use bundled photos until an admin upload marks storage:
   const staticImage = STATIC_IMAGE_BY_SLUG[slug];
-  if (staticImage) {
+  if (staticImage && !imageUrl.startsWith("storage:")) {
     return staticImage;
   }
 
@@ -78,5 +84,5 @@ export function getDressImagePublicUrl(imageUrl: string, slug: string): string {
     return `${url}/storage/v1/object/public/dress-images/${imageUrl}`;
   }
 
-  return "";
+  return staticImage ?? "";
 }

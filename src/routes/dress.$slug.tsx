@@ -7,11 +7,10 @@ import { useT, useLocale } from "@/i18n/locale-context";
 import { usePageMeta } from "@/i18n/use-page-meta";
 import { translations, DEFAULT_LOCALE } from "@/i18n/translations";
 import { AvailabilitySection } from "@/components/availability-section";
+import { ShowroomVisitModal } from "@/components/showroom-visit-modal";
 import { UnderlineLink } from "@/components/underline-link";
-import { formatRentalDateWhatsApp, getRentalEndDate } from "@/lib/rental-period";
 import { openGraphMeta } from "@/lib/open-graph";
 import { getReservationBlocks } from "@/lib/reservations";
-import { whatsappUrl } from "@/lib/whatsapp";
 import { ctaClass } from "@/components/cta-button";
 
 export const Route = createFileRoute("/dress/$slug")({
@@ -93,17 +92,8 @@ function DressPage() {
         .map((item) => localizeDress(item, locale, t)),
     [dress.slug, dresses, locale, t],
   );
-  const [confirmedRentalStart, setConfirmedRentalStart] = useState<Date | null>(null);
-
+  const [showroomVisitOpen, setShowroomVisitOpen] = useState(false);
   usePageMeta(`${dress.name} — Na Curva`, dress.description);
-
-  const whatsappMessage = confirmedRentalStart
-    ? t.whatsapp.dressWithDates(
-        dress.name,
-        formatRentalDateWhatsApp(confirmedRentalStart, locale),
-        formatRentalDateWhatsApp(getRentalEndDate(confirmedRentalStart), locale),
-      )
-    : t.whatsapp.dress(dress.name);
 
   return (
     <SiteLayout>
@@ -138,11 +128,7 @@ function DressPage() {
             </p>
 
             <div className="space-y-5">
-              <AvailabilitySection
-                reservations={reservations}
-                confirmedRentalStart={confirmedRentalStart}
-                onConfirmRentalStart={setConfirmedRentalStart}
-              />
+              <AvailabilitySection reservations={reservations} />
 
               <div className="border-t border-border pt-5">
                 <p className="eyebrow mb-3">{t.dress.details}</p>
@@ -154,18 +140,22 @@ function DressPage() {
               </div>
             </div>
 
-            <a
-              href={whatsappUrl(whatsappMessage)}
-              target="_blank"
-              rel="noreferrer"
+            <button
+              type="button"
+              onClick={() => setShowroomVisitOpen(true)}
               className={ctaClass({ variant: "coral", size: "full", className: "mt-2" })}
             >
-              {t.cta.reserveWhatsAppUpper}
-            </a>
+              {t.dress.requestShowroomVisit}
+            </button>
 
             <p className="-mt-4 text-center text-xs text-muted-foreground">
-              {t.cta.noCheckout}
+              {t.dress.showroomVisitNote}
             </p>
+
+            <ShowroomVisitModal
+              open={showroomVisitOpen}
+              onOpenChange={setShowroomVisitOpen}
+            />
           </div>
         </div>
       </section>

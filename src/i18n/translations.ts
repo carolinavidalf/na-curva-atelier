@@ -31,6 +31,8 @@ export type Translation = {
     reserve: string;
     reserveWhatsApp: string;
     menu: string;
+    closeMenu: string;
+    mobileNavLabel: string;
     homeAria: string;
   };
   ticker: string[];
@@ -127,6 +129,10 @@ export type Translation = {
     changeDates: string;
     useTheseDates: string;
     closeModal: string;
+    requestShowroomVisit: string;
+    showroomVisitTitle: string;
+    showroomVisitDescription: string;
+    showroomVisitNote: string;
     details: string;
     relatedTitle: string;
     notFoundEyebrow: string;
@@ -222,6 +228,8 @@ const pt: Translation = {
     reserve: "Reservar",
     reserveWhatsApp: "Reservar via WhatsApp →",
     menu: "Menu",
+    closeMenu: "Fechar menu",
+    mobileNavLabel: "Navegação principal",
     homeAria: "Na Curva — início",
   },
   ticker: ["Casamentos", "Eventos de empresa", "Festas", "Celebrações"],
@@ -331,9 +339,9 @@ const pt: Translation = {
     occasions: "Ocasiões",
     availability: "Datas de aluguer",
     availabilityHelper:
-      "Seleciona a data de início do aluguer. Período de aluguer: 5 dias.",
+      "Consulta as datas indisponíveis antes de pedires uma visita.",
     availabilityChangeHelper:
-      "Seleciona outra data de início disponível para atualizar as tuas datas.",
+      "Consulta as datas indisponíveis antes de pedires uma visita.",
     rentalSummaryLabel: "Datas selecionadas",
     legendAvailable: "Disponível",
     legendReserved: "Reservado",
@@ -345,10 +353,15 @@ const pt: Translation = {
     rentalDateRange: (start, end) => `${start} → ${end}`,
     rentalPeriodError:
       "Este período de aluguer não está disponível. Escolhe outra data de início.",
-    viewReservedDates: "Escolher datas de aluguer",
+    viewReservedDates: "Ver datas indisponíveis",
     changeDates: "Alterar datas",
     useTheseDates: "Usar estas datas",
     closeModal: "Fechar",
+    requestShowroomVisit: "Pedir visita ao showroom",
+    showroomVisitTitle: "Visita ao showroom",
+    showroomVisitDescription:
+      "Marca uma prova no nosso showroom em Lisboa. Podes experimentar várias peças da coleção numa única visita.",
+    showroomVisitNote: "Confirmamos a visita contigo pessoalmente.",
     details: "Detalhes",
     relatedTitle: "Também na seleção",
     notFoundEyebrow: "Não encontrado",
@@ -621,6 +634,8 @@ const en: Translation = {
     reserve: "Reserve",
     reserveWhatsApp: "Reserve via WhatsApp →",
     menu: "Menu",
+    closeMenu: "Close menu",
+    mobileNavLabel: "Main navigation",
     homeAria: "Na Curva — home",
   },
   ticker: ["Weddings", "Company Events", "Parties", "Celebrations"],
@@ -729,9 +744,8 @@ const en: Translation = {
     sizes: "Sizes",
     occasions: "Occasions",
     availability: "Rental dates",
-    availabilityHelper: "Select your rental start date. Rental period: 5 days.",
-    availabilityChangeHelper:
-      "Select another available start date to update your dates.",
+    availabilityHelper: "Check unavailable dates before requesting a visit.",
+    availabilityChangeHelper: "Check unavailable dates before requesting a visit.",
     rentalSummaryLabel: "Selected dates",
     legendAvailable: "Available",
     legendReserved: "Reserved",
@@ -743,10 +757,15 @@ const en: Translation = {
     rentalDateRange: (start, end) => `${start} → ${end}`,
     rentalPeriodError:
       "This rental period isn't available. Please choose another start date.",
-    viewReservedDates: "Select rental dates",
+    viewReservedDates: "View unavailable dates",
     changeDates: "Change dates",
     useTheseDates: "Use these dates",
     closeModal: "Close",
+    requestShowroomVisit: "Request showroom visit",
+    showroomVisitTitle: "Showroom visit",
+    showroomVisitDescription:
+      "Book a fitting at our Lisbon showroom. You can try several pieces from the collection in one visit.",
+    showroomVisitNote: "We'll confirm your visit with you personally.",
     details: "Details",
     relatedTitle: "Also in the edit",
     notFoundEyebrow: "Not found",
