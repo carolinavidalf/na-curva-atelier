@@ -21,7 +21,7 @@ export function ShowroomVisitModal({ open, onOpenChange }: ShowroomVisitModalPro
       <DialogContent
         overlayClassName="bg-foreground/20 backdrop-blur-[2px]"
         closeLabel={t.dress.closeModal}
-        className="max-h-[min(42rem,calc(100dvh-2rem))] max-w-[min(26rem,calc(100vw-2rem))] gap-0 overflow-y-auto border-border/50 bg-background p-6 shadow-none sm:rounded-sm"
+        className="max-h-[min(44rem,calc(100dvh-2rem))] max-w-[min(32rem,calc(100vw-2rem))] gap-0 overflow-y-auto border-border/50 bg-background p-6 shadow-none sm:rounded-sm"
       >
         <DialogHeader className="space-y-2 pr-8 text-left">
           <DialogTitle className="eyebrow font-sans text-foreground">
@@ -32,9 +32,11 @@ export function ShowroomVisitModal({ open, onOpenChange }: ShowroomVisitModalPro
           </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-6">
-          <CalBookingEmbed />
-        </div>
+        {open && (
+          <div className="mt-6">
+            <CalBookingEmbed active />
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

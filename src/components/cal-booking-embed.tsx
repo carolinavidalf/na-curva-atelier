@@ -1,65 +1,69 @@
-import Cal from "@calcom/embed-react";
-import { useEffect, useMemo, useState } from "react";
+import { getCalApi } from "@calcom/embed-react";
+import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+
+const CAL_NAMESPACE = "showroom-fitting";
+const DEFAULT_CAL_LINK = "na-curva351/showroom-fitting";
 
 type CalBookingEmbedProps = {
   className?: string;
+  /** Mount the embed only while the booking surface is visible (e.g. modal open). */
+  active?: boolean;
 };
 
-function getCalLinkFromEnv(): string | null {
+function getCalLinkFromEnv(): string {
   const raw = import.meta.env.VITE_CAL_COM_BOOKING_URL?.trim();
-  if (!raw) return null;
+  if (!raw) return DEFAULT_CAL_LINK;
 
   if (/^https?:\/\//i.test(raw)) {
     try {
       const { pathname } = new URL(raw);
       const calLink = pathname.replace(/^\/+|\/+$/g, "");
-      return calLink || null;
+      return calLink || DEFAULT_CAL_LINK;
     } catch {
-      return null;
+      return DEFAULT_CAL_LINK;
     }
   }
 
-  return raw.replace(/^\/+|\/+$/g, "") || null;
+  return raw.replace(/^\/+|\/+$/g, "") || DEFAULT_CAL_LINK;
 }
 
 /** Inline Cal.com booking embed for the showroom visit modal. */
-export function CalBookingEmbed({ className }: CalBookingEmbedProps) {
-  const calLink = useMemo(() => getCalLinkFromEnv(), []);
-  const [mounted, setMounted] = useState(false);
+export function CalBookingEmbed({ className, active = true }: CalBookingEmbedProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const calLink = getCalLinkFromEnv();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!active) return;
 
-  if (!calLink) {
-    return (
-      <div
-        data-cal-booking-embed
-        className={cn("min-h-[12rem] w-full", className)}
-      />
-    );
-  }
+    const element = containerRef.current;
+    if (!element) return;
 
-  if (!mounted) {
-    return (
-      <div
-        data-cal-booking-embed
-        className={cn("min-h-[12rem] w-full", className)}
-      />
-    );
-  }
+    let cancelled = false;
+
+    (async () => {
+      const cal = await getCalApi({ namespace: CAL_NAMESPACE });
+      if (cancelled) return;
+
+      element.replaceChildren();
+      cal("inline", {
+        elementOrSelector: element,
+        calLink,
+        config: { layout: "month_view" },
+      });
+    })();
+
+    return () => {
+      cancelled = true;
+      element.replaceChildren();
+    };
+  }, [active, calLink]);
 
   return (
     <div
+      ref={containerRef}
       data-cal-booking-embed
-      className={cn("min-h-[12rem] w-full overflow-hidden", className)}
-    >
-      <Cal
-        calLink={calLink}
-        config={{ layout: "month_view" }}
-        style={{ width: "100%", height: "min(70vh, 36rem)", overflow: "auto" }}
-      />
-    </div>
+      className={cn("min-h-[22rem] w-full", className)}
+    />
   );
 }
