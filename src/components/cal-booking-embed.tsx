@@ -41,6 +41,8 @@ function getCalEmbedSrc(calLink: string, locale: Locale): string {
     embed: "true",
     layout: "month_view",
     locale: locale === "pt" ? "pt" : "en",
+    hideEventTypeDetails: "true",
+    showTimezoneWhenEventDetailsHidden: "true",
   });
   return `https://cal.com/${calLink}?${params.toString()}`;
 }
@@ -68,7 +70,12 @@ export function CalBookingEmbed({ className, active = true }: CalBookingEmbedPro
   if (!active) return null;
 
   return (
-    <div className={cn("relative h-[32rem] w-full", className)}>
+    <div
+      className={cn(
+        "relative w-full h-[min(36rem,calc(100dvh-14rem))] min-h-[24rem]",
+        className,
+      )}
+    >
       {ready ? (
         <iframe
           key={`${calLink}-${locale}`}

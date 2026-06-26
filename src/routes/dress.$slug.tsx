@@ -157,9 +157,6 @@ function DressPage() {
               >
                 {t.dress.requestShowroomVisit}
               </button>
-              <p className="mt-3 text-center text-xs text-muted-foreground">
-                {t.dress.showroomVisitNote}
-              </p>
             </section>
 
             <ShowroomVisitModal
