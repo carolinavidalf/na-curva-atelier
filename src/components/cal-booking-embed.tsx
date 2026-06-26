@@ -1,8 +1,5 @@
-import { getCalApi } from "@calcom/embed-react";
-import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
-const CAL_NAMESPACE = "showroom-fitting";
 const DEFAULT_CAL_LINK = "na-curva351/showroom-fitting";
 
 type CalBookingEmbedProps = {
@@ -28,42 +25,28 @@ function getCalLinkFromEnv(): string {
   return raw.replace(/^\/+|\/+$/g, "") || DEFAULT_CAL_LINK;
 }
 
+function getCalEmbedSrc(calLink: string): string {
+  const params = new URLSearchParams({
+    embed: "true",
+    layout: "month_view",
+  });
+  return `https://cal.com/${calLink}?${params.toString()}`;
+}
+
 /** Inline Cal.com booking embed for the showroom visit modal. */
 export function CalBookingEmbed({ className, active = true }: CalBookingEmbedProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const calLink = getCalLinkFromEnv();
 
-  useEffect(() => {
-    if (!active) return;
-
-    const element = containerRef.current;
-    if (!element) return;
-
-    let cancelled = false;
-
-    (async () => {
-      const cal = await getCalApi({ namespace: CAL_NAMESPACE });
-      if (cancelled) return;
-
-      element.replaceChildren();
-      cal("inline", {
-        elementOrSelector: element,
-        calLink,
-        config: { layout: "month_view" },
-      });
-    })();
-
-    return () => {
-      cancelled = true;
-      element.replaceChildren();
-    };
-  }, [active, calLink]);
+  if (!active) return null;
 
   return (
-    <div
-      ref={containerRef}
+    <iframe
+      title="Book a showroom visit"
+      src={getCalEmbedSrc(calLink)}
       data-cal-booking-embed
-      className={cn("min-h-[22rem] w-full", className)}
+      className={cn("h-[32rem] w-full border-0 bg-background", className)}
+      loading="lazy"
+      referrerPolicy="strict-origin-when-cross-origin"
     />
   );
 }
