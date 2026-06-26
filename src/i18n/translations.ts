@@ -344,11 +344,11 @@ const pt: Translation = {
     availability: "Datas de aluguer",
     availabilityViewOnly: "Só consulta",
     availabilityHelper:
-      "Vê quando este vestido já está reservado para aluguer. Só consulta.",
+      "Datas já ocupadas para aluguer deste vestido. Só para consulta.",
     availabilityReadOnlyNote:
-      "Calendário só informativo. Não reserva nem bloqueia datas.",
+      "Só informativo. Não reserva o vestido nem uma visita.",
     availabilityChangeHelper:
-      "Vê quando este vestido já está reservado para aluguer. Só consulta.",
+      "Datas já ocupadas para aluguer deste vestido. Só para consulta.",
     rentalSummaryLabel: "Datas selecionadas",
     legendAvailable: "Disponível",
     legendReserved: "Reservado",
@@ -360,18 +360,19 @@ const pt: Translation = {
     rentalDateRange: (start, end) => `${start} → ${end}`,
     rentalPeriodError:
       "Este período de aluguer não está disponível. Escolhe outra data de início.",
-    viewReservedDates: "Ver datas indisponíveis",
+    viewReservedDates: "Ver calendário de aluguer",
     changeDates: "Alterar datas",
     useTheseDates: "Usar estas datas",
     closeModal: "Fechar",
     showroomSectionEyebrow: "Showroom",
     showroomSectionHelper:
-      "Pede uma visita ao showroom em Lisboa. Confirmamos contigo.",
-    requestShowroomVisit: "Pedir visita ao showroom",
-    showroomVisitTitle: "Visita ao showroom",
+      "Visita o nosso showroom em Lisboa para experimentar este vestido e outras peças da coleção.",
+    requestShowroomVisit: "Marcar visita",
+    showroomVisitTitle: "Marcar visita",
     showroomVisitDescription:
-      "Marca uma prova no nosso showroom em Lisboa. Podes experimentar várias peças da coleção numa única visita.",
-    showroomVisitNote: "Confirmamos a visita contigo pessoalmente.",
+      "Visita o nosso showroom em Lisboa para experimentar este vestido e outras peças da coleção.",
+    showroomVisitNote:
+      "Escolhe um horário abaixo. Confirmamos contigo pessoalmente. O aluguer fica para depois.",
     details: "Detalhes",
     relatedTitle: "Também na seleção",
     notFoundEyebrow: "Não encontrado",
@@ -756,11 +757,11 @@ const en: Translation = {
     availability: "Rental dates",
     availabilityViewOnly: "View only",
     availabilityHelper:
-      "See when this dress is already reserved for rental. View only.",
+      "Dates already booked for rental on this dress. For reference only.",
     availabilityReadOnlyNote:
-      "This calendar is for reference only. It does not book or hold dates.",
+      "For reference only. Does not reserve the dress or a visit.",
     availabilityChangeHelper:
-      "See when this dress is already reserved for rental. View only.",
+      "Dates already booked for rental on this dress. For reference only.",
     rentalSummaryLabel: "Selected dates",
     legendAvailable: "Available",
     legendReserved: "Reserved",
@@ -772,18 +773,19 @@ const en: Translation = {
     rentalDateRange: (start, end) => `${start} → ${end}`,
     rentalPeriodError:
       "This rental period isn't available. Please choose another start date.",
-    viewReservedDates: "View unavailable dates",
+    viewReservedDates: "View rental calendar",
     changeDates: "Change dates",
     useTheseDates: "Use these dates",
     closeModal: "Close",
     showroomSectionEyebrow: "Showroom",
     showroomSectionHelper:
-      "Request a visit to our Lisbon showroom. We confirm with you.",
-    requestShowroomVisit: "Request showroom visit",
-    showroomVisitTitle: "Showroom visit",
+      "Visit our Lisbon showroom to try this dress and other pieces from the collection.",
+    requestShowroomVisit: "Request a visit",
+    showroomVisitTitle: "Request a visit",
     showroomVisitDescription:
-      "Book a fitting at our Lisbon showroom. You can try several pieces from the collection in one visit.",
-    showroomVisitNote: "We'll confirm your visit with you personally.",
+      "Visit our Lisbon showroom to try this dress and other pieces from the collection.",
+    showroomVisitNote:
+      "Choose a time below. We confirm with you personally. Rental comes later.",
     details: "Details",
     relatedTitle: "Also in the edit",
     notFoundEyebrow: "Not found",
