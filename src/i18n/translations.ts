@@ -125,6 +125,7 @@ export type Translation = {
     calendarNextMonth: string;
     calendarPast: string;
     calendarSelectDay: string;
+    calendarWeekdaysShort: readonly [string, string, string, string, string, string, string];
     rentalDateRange: (start: string, end: string) => string;
     rentalPeriodError: string;
     viewReservedDates: string;
@@ -183,6 +184,10 @@ export type Translation = {
     DressSlug,
     { name: string; description: string; details: string[] }
   >;
+  help: {
+    whatsappLabel: string;
+    whatsappAria: string;
+  };
   whatsapp: {
     general: string;
     navReserve: string;
@@ -229,8 +234,8 @@ const pt: Translation = {
     howItWorks: "Como Funciona",
     about: "Sobre",
     faq: "FAQ",
-    reserve: "Reservar",
-    reserveWhatsApp: "Reservar via WhatsApp →",
+    reserve: "Marcar visita",
+    reserveWhatsApp: "Marcar visita →",
     menu: "Menu",
     closeMenu: "Fechar menu",
     mobileNavLabel: "Navegação principal",
@@ -257,9 +262,9 @@ const pt: Translation = {
     readStory: "Ler a nossa história →",
     allAnswers: "Todas as respostas →",
     seeAllQuestions: "Ver todas as perguntas →",
-    reserveWhatsApp: "Reservar via WhatsApp",
-    reserveOnWhatsApp: "Reservar no WhatsApp",
-    reserveWhatsAppUpper: "RESERVAR VIA WHATSAPP →",
+    reserveWhatsApp: "Marcar visita",
+    reserveOnWhatsApp: "Marcar visita",
+    reserveWhatsAppUpper: "MARCAR VISITA →",
     noCheckout: "Sem checkout. Uma pessoa real confirma a reserva.",
     backToCollection: "Voltar à coleção",
   },
@@ -357,6 +362,7 @@ const pt: Translation = {
     calendarNextMonth: "Mês seguinte",
     calendarPast: "data passada",
     calendarSelectDay: "Selecionar como data de início do aluguer",
+    calendarWeekdaysShort: ["SEG", "TER", "QUA", "QUI", "SEX", "SÁB", "DOM"],
     rentalDateRange: (start, end) => `${start} → ${end}`,
     rentalPeriodError:
       "Este período de aluguer não está disponível. Escolhe outra data de início.",
@@ -549,10 +555,15 @@ const pt: Translation = {
       details: ["100% seda", "Fecho wrap para atar", "Mangas compridas", "Comprimento até ao chão"],
     },
   },
+  help: {
+    whatsappLabel: "Precisa de ajuda?",
+    whatsappAria: "Precisa de ajuda? Fale connosco no WhatsApp.",
+  },
   whatsapp: {
-    general: "Olá Na Curva, gostaria de saber mais sobre uma reserva.",
+    general:
+      "Olá Na Curva, gostava de marcar uma visita ao showroom para experimentar peças da coleção.",
     navReserve:
-      "Olá!\n\nTenho um evento em breve e estou à procura da peça ideal.\n\nPodem ajudar-me?\n\nObrigada!",
+      "Olá!\n\nGostava de marcar uma visita ao vosso showroom em Lisboa para experimentar peças da coleção.\n\nQue horários têm disponíveis?\n\nObrigada!",
     dress: (name) =>
       `Olá Na Curva, gostaria de reservar "${name}". Podem confirmar a disponibilidade?`,
     dressWithDates: (name, start, end) =>
@@ -642,8 +653,8 @@ const en: Translation = {
     howItWorks: "How It Works",
     about: "About",
     faq: "FAQ",
-    reserve: "Reserve",
-    reserveWhatsApp: "Reserve via WhatsApp →",
+    reserve: "Book a visit",
+    reserveWhatsApp: "Book a visit →",
     menu: "Menu",
     closeMenu: "Close menu",
     mobileNavLabel: "Main navigation",
@@ -670,9 +681,9 @@ const en: Translation = {
     readStory: "Read our story →",
     allAnswers: "All answers →",
     seeAllQuestions: "See all questions →",
-    reserveWhatsApp: "Reserve via WhatsApp",
-    reserveOnWhatsApp: "Reserve on WhatsApp",
-    reserveWhatsAppUpper: "RESERVE VIA WHATSAPP →",
+    reserveWhatsApp: "Book a visit",
+    reserveOnWhatsApp: "Book a visit",
+    reserveWhatsAppUpper: "BOOK A VISIT →",
     noCheckout: "No checkout. A real person will reply to confirm.",
     backToCollection: "Back to the collection",
   },
@@ -770,6 +781,7 @@ const en: Translation = {
     calendarNextMonth: "Next month",
     calendarPast: "past date",
     calendarSelectDay: "Select as rental start date",
+    calendarWeekdaysShort: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     rentalDateRange: (start, end) => `${start} → ${end}`,
     rentalPeriodError:
       "This rental period isn't available. Please choose another start date.",
@@ -962,10 +974,15 @@ const en: Translation = {
       details: ["100% silk", "Self-tie wrap closure", "Long sleeves", "Floor length"],
     },
   },
+  help: {
+    whatsappLabel: "Need help?",
+    whatsappAria: "Need help? Chat with us on WhatsApp.",
+  },
   whatsapp: {
-    general: "Hi Na Curva, I'd like to know more about making a reservation.",
+    general:
+      "Hi Na Curva, I'd like to book a visit to the showroom to try pieces from the collection.",
     navReserve:
-      "Hi!\n\nI'm looking for something to wear for an upcoming event.\n\nCould you help me find the right piece?\n\nThank you!",
+      "Hi!\n\nI'd like to book a visit to your Lisbon showroom to try pieces from the collection.\n\nWhat times do you have available?\n\nThank you!",
     dress: (name) =>
       `Hi Na Curva, I'd like to reserve "${name}". Could you confirm availability?`,
     dressWithDates: (name, start, end) =>

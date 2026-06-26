@@ -159,6 +159,8 @@ function RangeBar({
   return <span aria-hidden className={rangeBarClassName(segment, variant)} />;
 }
 
+const FALLBACK_WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"] as const;
+
 export function AvailabilityCalendar({
   reservations,
   monthLabelId = "availability-month-label",
@@ -231,14 +233,7 @@ export function AvailabilityCalendar({
     year: "numeric",
   }).format(new Date(viewYear, viewMonth, 1));
 
-  const weekdayLabels = useMemo(
-    () =>
-      Array.from({ length: 7 }, (_, i) => {
-        const date = new Date(2024, 0, 1 + i);
-        return new Intl.DateTimeFormat(intlLocale, { weekday: "short" }).format(date);
-      }),
-    [intlLocale],
-  );
+  const weekdayLabels = t.dress.calendarWeekdaysShort ?? FALLBACK_WEEKDAYS;
 
   const cells = useMemo(
     () => buildMonthDays(viewYear, viewMonth),
@@ -396,7 +391,7 @@ export function AvailabilityCalendar({
             key={`weekday-${i}`}
             role="columnheader"
             className={cn(
-              "pb-1 text-center font-normal uppercase tracking-[0.1em] text-muted-foreground/65",
+              "pb-1 text-center font-normal uppercase tracking-[0.08em] text-muted-foreground/65",
               styles.weekday,
             )}
           >

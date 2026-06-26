@@ -36,7 +36,7 @@ function getCalLinkForLocale(locale: Locale): string {
   return parseCalLink(import.meta.env.VITE_CAL_COM_BOOKING_URL, DEFAULT_CAL_LINK_PT);
 }
 
-function getCalEmbedSrc(calLink: string, locale: Locale): string {
+function getCalEmbedSrc(calLink: string, locale: Locale, session: number): string {
   const params = new URLSearchParams({
     embed: "true",
     layout: "month_view",
@@ -44,6 +44,7 @@ function getCalEmbedSrc(calLink: string, locale: Locale): string {
     hideEventTypeDetails: "true",
     showTimezoneWhenEventDetailsHidden: "true",
   });
+  if (session > 0) params.set("_ts", String(session));
   return `https://cal.com/${calLink}?${params.toString()}`;
 }
 
@@ -53,6 +54,7 @@ export function CalBookingEmbed({ className, active = true }: CalBookingEmbedPro
   const t = useT();
   const calLink = getCalLinkForLocale(locale);
   const [ready, setReady] = useState(false);
+  const [embedSession, setEmbedSession] = useState(0);
 
   useEffect(() => {
     if (!active) {
@@ -60,6 +62,7 @@ export function CalBookingEmbed({ className, active = true }: CalBookingEmbedPro
       return;
     }
 
+    setEmbedSession((session) => session + 1);
     const timer = window.setTimeout(() => setReady(true), 50);
     return () => {
       window.clearTimeout(timer);
@@ -78,9 +81,9 @@ export function CalBookingEmbed({ className, active = true }: CalBookingEmbedPro
     >
       {ready ? (
         <iframe
-          key={`${calLink}-${locale}`}
+          key={`${calLink}-${locale}-${embedSession}`}
           title={t.dress.showroomVisitTitle}
-          src={getCalEmbedSrc(calLink, locale)}
+          src={getCalEmbedSrc(calLink, locale, embedSession)}
           data-cal-booking-embed
           className="absolute inset-0 h-full w-full border-0 bg-background"
           loading="eager"
