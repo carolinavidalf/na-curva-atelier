@@ -140,17 +140,27 @@ function DressPage() {
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setShowroomVisitOpen(true)}
-              className={ctaClass({ variant: "coral", size: "full", className: "mt-2" })}
+            <section
+              aria-labelledby="dress-showroom-heading"
+              className="border-t border-border pt-8"
             >
-              {t.dress.requestShowroomVisit}
-            </button>
-
-            <p className="-mt-4 text-center text-xs text-muted-foreground">
-              {t.dress.showroomVisitNote}
-            </p>
+              <p className="eyebrow mb-2" id="dress-showroom-heading">
+                {t.dress.showroomSectionEyebrow}
+              </p>
+              <p className="mb-5 text-[13px] leading-relaxed text-muted-foreground">
+                {t.dress.showroomSectionHelper}
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowroomVisitOpen(true)}
+                className={ctaClass({ variant: "coral", size: "full" })}
+              >
+                {t.dress.requestShowroomVisit}
+              </button>
+              <p className="mt-3 text-center text-xs text-muted-foreground">
+                {t.dress.showroomVisitNote}
+              </p>
+            </section>
 
             <ShowroomVisitModal
               open={showroomVisitOpen}

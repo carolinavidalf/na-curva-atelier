@@ -32,11 +32,9 @@ export function ShowroomVisitModal({ open, onOpenChange }: ShowroomVisitModalPro
           </DialogDescription>
         </DialogHeader>
 
-        {open && (
-          <div className="mt-6">
-            <CalBookingEmbed active />
-          </div>
-        )}
+        <div className="mt-6">
+          <CalBookingEmbed active={open} />
+        </div>
       </DialogContent>
     </Dialog>
   );

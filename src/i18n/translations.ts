@@ -113,7 +113,9 @@ export type Translation = {
     sizes: string;
     occasions: string;
     availability: string;
+    availabilityViewOnly: string;
     availabilityHelper: string;
+    availabilityReadOnlyNote: string;
     availabilityChangeHelper: string;
     rentalSummaryLabel: string;
     legendAvailable: string;
@@ -129,6 +131,8 @@ export type Translation = {
     changeDates: string;
     useTheseDates: string;
     closeModal: string;
+    showroomSectionEyebrow: string;
+    showroomSectionHelper: string;
     requestShowroomVisit: string;
     showroomVisitTitle: string;
     showroomVisitDescription: string;
@@ -338,10 +342,13 @@ const pt: Translation = {
     sizes: "Tamanhos",
     occasions: "Ocasiões",
     availability: "Datas de aluguer",
+    availabilityViewOnly: "Só consulta",
     availabilityHelper:
-      "Consulta as datas indisponíveis antes de pedires uma visita.",
+      "Vê quando este vestido já está reservado para aluguer. Só consulta.",
+    availabilityReadOnlyNote:
+      "Calendário só informativo. Não reserva nem bloqueia datas.",
     availabilityChangeHelper:
-      "Consulta as datas indisponíveis antes de pedires uma visita.",
+      "Vê quando este vestido já está reservado para aluguer. Só consulta.",
     rentalSummaryLabel: "Datas selecionadas",
     legendAvailable: "Disponível",
     legendReserved: "Reservado",
@@ -357,6 +364,9 @@ const pt: Translation = {
     changeDates: "Alterar datas",
     useTheseDates: "Usar estas datas",
     closeModal: "Fechar",
+    showroomSectionEyebrow: "Showroom",
+    showroomSectionHelper:
+      "Pede uma visita ao showroom em Lisboa. Confirmamos contigo.",
     requestShowroomVisit: "Pedir visita ao showroom",
     showroomVisitTitle: "Visita ao showroom",
     showroomVisitDescription:
@@ -744,8 +754,13 @@ const en: Translation = {
     sizes: "Sizes",
     occasions: "Occasions",
     availability: "Rental dates",
-    availabilityHelper: "Check unavailable dates before requesting a visit.",
-    availabilityChangeHelper: "Check unavailable dates before requesting a visit.",
+    availabilityViewOnly: "View only",
+    availabilityHelper:
+      "See when this dress is already reserved for rental. View only.",
+    availabilityReadOnlyNote:
+      "This calendar is for reference only. It does not book or hold dates.",
+    availabilityChangeHelper:
+      "See when this dress is already reserved for rental. View only.",
     rentalSummaryLabel: "Selected dates",
     legendAvailable: "Available",
     legendReserved: "Reserved",
@@ -761,6 +776,9 @@ const en: Translation = {
     changeDates: "Change dates",
     useTheseDates: "Use these dates",
     closeModal: "Close",
+    showroomSectionEyebrow: "Showroom",
+    showroomSectionHelper:
+      "Request a visit to our Lisbon showroom. We confirm with you.",
     requestShowroomVisit: "Request showroom visit",
     showroomVisitTitle: "Showroom visit",
     showroomVisitDescription:
