@@ -3,8 +3,8 @@ import { useLocale, useT } from "@/i18n/locale-context";
 import type { Locale } from "@/i18n/translations";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_CAL_LINK_PT = "na-curva351/showroom-fitting";
-const DEFAULT_CAL_LINK_EN = "na-curva351/book-fiting";
+const DEFAULT_CAL_LINK_PT = "na-curva351/marcar-visita";
+const DEFAULT_CAL_LINK_EN = "na-curva351/book-visit";
 
 type CalBookingEmbedProps = {
   className?: string;
