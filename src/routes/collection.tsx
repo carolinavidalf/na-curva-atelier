@@ -112,7 +112,7 @@ function CollectionPage() {
                 params={{ slug: dress.slug }}
                 className="group block"
               >
-                <div className="relative overflow-hidden bg-bone">
+                <div className="overflow-hidden bg-bone">
                   <img
                     src={dress.image}
                     alt={dress.name}
@@ -121,11 +121,6 @@ function CollectionPage() {
                     loading="lazy"
                     className="aspect-[4/5] w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]"
                   />
-                  {!dress.available && (
-                    <span className="eyebrow absolute left-3 top-3 bg-background px-2 py-1">
-                      {t.collection.reserved}
-                    </span>
-                  )}
                 </div>
                 <div className="mt-4 flex items-baseline justify-between gap-4">
                   <div>

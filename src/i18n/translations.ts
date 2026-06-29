@@ -105,7 +105,6 @@ export type Translation = {
     all: string;
     emptyTitle: string;
     emptyBody: string;
-    reserved: string;
   };
   dress: {
     perRental: string;
@@ -339,7 +338,6 @@ const pt: Translation = {
     all: "Todos",
     emptyTitle: "Ainda não há correspondências.",
     emptyBody: "Experimenta outro tamanho.",
-    reserved: "Reservado",
   },
   dress: {
     perRental: "por aluguer",
@@ -758,7 +756,6 @@ const en: Translation = {
     all: "All",
     emptyTitle: "Nothing matches yet.",
     emptyBody: "Try a different size.",
-    reserved: "Reserved",
   },
   dress: {
     perRental: "per rental",
